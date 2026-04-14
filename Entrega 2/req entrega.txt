@@ -1,0 +1,15 @@
+Realice el diseño y construya un documento de diseño donde presente el diseño, haciendo especial énfasis en
+justificar las decisiones clave que haya tomado. El documento debe incluir, como mínimo, los siguientes
+elementos:
+a. Un diagrama de clases de diseño que incluya todas las clases, incluyendo sus las relaciones, atributos
+y métodos.
+b. Un diagrama de clases de alto nivel, que incluya todas las clases y sus relaciones, pero no todos los
+métodos ni atributos. Este diagrama facilitará entender las relaciones entre clases.
+c. Diagramas de secuencia para las funcionalidades que usted considere críticas
+Estos elementos NO son los únicos que debe incluir su documento: piense en qué otros diagramas,
+descripciones y justificaciones pueden ser necesarias para poder entender totalmente el diseño. Si su
+documento incluye únicamente los tres elementos mencionados antes, con seguridad será considerado
+insuficiente.
+2. Implemente el sistema que diseñó. Tenga en cuenta que los detalles de la implementación deben ser
+coherentes tanto con el modelo de clases, como con los diagramas de secuencia.
+3. Asegúrese de que la documentación del diseño sea consistente con la implementación.
