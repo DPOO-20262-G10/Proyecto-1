@@ -1,27 +1,30 @@
 package boardgamecafe.usuarios;
 
 public abstract class Usuario {
+	
     private String login;
+    
 	private String password;
-	private int puntos_fidelidad;
+	
+	private int puntosFidelidad;
 	
 	public Usuario(String login, String password)
 	{
 		this.login = login;
 		this.password = password;
-		this.puntos_fidelidad = 0;
+		this.puntosFidelidad = 0;
 		
 	}
 
 
-    public abstract void Iniciar_sesion(String login, String password);
+    public abstract void IniciarSesion(String login, String password);
 	
-    public abstract void Cerrar_sesion();
+    public abstract void CerrarSesion();
     
-    public abstract void Agregar_favorito(int id_juego);
+    public abstract void AgregarFavorito(int idJuego);
     
-    public abstract void Eliminar_favorito(int id_juego);
+    public abstract void EliminarFavorito(int idJuego);
     
-    public abstract void Consultar_favoritos();
+    public abstract void ConsultarFavoritos();
 
 }

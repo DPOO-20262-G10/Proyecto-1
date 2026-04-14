@@ -1,12 +1,14 @@
 package boardgamecafe;
 
+
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Date;
 
 import boardgamecafe.menu.Producto;
+import boardgamecafe.pedidos.Compra;
 import boardgamecafe.pedidos.Pedido;
 import boardgamecafe.pedidos.Prestamo;
 import boardgamecafe.usuarios.Administrador;
@@ -17,29 +19,20 @@ import boardgamecafe.usuarios.Usuario;
 
 public class BoardCafe {
 
-
-    private Map<String, Usuario> usuarios = new HashMap<>();
-    private Map<Integer, JuegosDeMesa> juegos = new HashMap<>();
-    private Map<Integer, CopiaJuego> copias = new HashMap<>();
-    private Map<Integer, Producto> productos = new HashMap<>();
-    private Map<Integer, Mesa> mesas = new HashMap<>();
-    private List<Pedido> pedidos = new ArrayList<>();
-    private List<Compra> compras = new ArrayList<>();
-    private List<Prestamo> prestamos = new ArrayList<>();
-    private List<Turno> turnos = new ArrayList<>();
-    private List<SolicitudCambioTurno> solicitudes = new ArrayList<>();
-
-
+    private Map<String, Usuario> usuarios;
+    private Map<Integer, JuegosDeMesa> juegos;
+    private Map<Integer, CopiaJuego> copias;
+    private Map<Integer, Producto> productos;
+    private Map<Integer, Mesa> mesas;
+    private List<Pedido> pedidos;
+    private List<Compra> compras;
+    private List<Prestamo> prestamos;
+    private List<Turno> turnos;
+    private List<SolicitudCambioTurno> solicitudes;
     private int nextJuegoId = 1;
-    private int nextCopiaId = 1;
-    private int nextProductoId = 1;
-    private int nextMesaId = 1;
     private int nextPedidoId = 1;
-    private int nextCompraId = 1;
     private int nextPrestamoId = 1;
-    private int nextSolicitudId = 1;
-    
-
+    private int nextCompraId = 1;
 
     public BoardCafe() {
         this.usuarios = new HashMap<>();
@@ -55,20 +48,23 @@ public class BoardCafe {
     }
 
 
-
     public void registrarUsuario(String nombre, String login, String password, String tipo) {
-    // Verificar si el usuario ya existe
-    if (usuarios.containsKey(login)) {
-        throw new IllegalArgumentException("Error: El usuario con login '" + login + "' ya existe.");
-    }
-    
-        Usuario user = new Usuario();
-        user.nombre = nombre;
-        user.login = login;
-        user.password = password;
-        user.tipo = tipo;
-        usuarios.put(login, user);
-        System.out.println("Usuario registrado: " + nombre);
+        if (usuarios.containsKey(login)) {
+            System.out.println("El login ya existe");
+            return;
+        }
+        int nuevoId = usuarios.size() + 1;
+        if (tipo.equals("cliente")) {
+            usuarios.put(login, new Cliente(nuevoId, login, password, this));
+        } else if (tipo.equals("mesero")) {
+            usuarios.put(login, new Mesero(nuevoId, login, password, this));
+        } else if (tipo.equals("cocinero")) {
+            usuarios.put(login, new Cocinero(nuevoId, login, password, this));
+        } else if (tipo.equals("administrador")) {
+            usuarios.put(login, new Administrador(nuevoId, login, password, this));
+        } else {
+            System.out.println("Tipo de usuario invalido");
+        }
     }
 
 

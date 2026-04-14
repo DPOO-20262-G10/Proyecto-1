@@ -1,37 +1,77 @@
 package boardgamecafe.usuarios;
 
+import java.util.List;
+import java.util.ArrayList;
+
+import boardgamecafe.Turno;
+import boardgamecafe.SolicitudCambioTurno;
+
 public class Empleado extends Usuario{
 
-	public int id_empleado;
-    public boolean en_turno;
-    public String codigo_descuento;
+	private int idEmpleado;
+	private boolean enTurno;
+    private String codigoDescuento;
+    private List<JuegosDeMesa> juegos;
+    private List<Turno> turnos;
+    private List<SolicitudCambioTurno> solicitudes;
     
-    public Empleado(int id_empleado, String login, String password) {
+    public Empleado(int idEmpleado, String login, String password, String codigoDescuento) {
         super(login, password);
-        this.id_empleado = id_empleado;
-        this.en_turno = false;
-        this.codigo_descuento = "";
+        this.idEmpleado = idEmpleado;
+        this.enTurno = false;
+        this.codigoDescuento = codigoDescuento;
+        this.juegos = new ArrayList<>();
+        this.turnos = new ArrayList<>();
+        this.solicitudes = new ArrayList<>();
     }
 	
     @Override
-    public void Iniciar_sesion(String login, String password) {}
+    public void IniciarSesion(String login, String password) {
+    	System.out.println("Inició sesion como Empleado");
+    }
     
     @Override
-    public void Cerrar_sesion() {}
+    public void CerrarSesion() {
+    	System.out.println("Empleado cierra sesión");
+    }
     
     @Override
-    public void Agregar_favorito(int id_juego) {}
+    public void AgregarFavorito(JuegoDeMesa juego) {
+    	juegos.add(juego);
+    	System.out.println("Juego agregado a favoritos");
+    }
     
     @Override
-    public void Eliminar_favorito(int id_juego) {}
+    public void EliminarFavorito(JuegoDeMesa juego) {
+    	juegos.remove(juego);
+    	System.out.println("Juego eliminado de favoritos");
+    }
+    
     
     @Override
-    public void Consultar_favoritos() {}
+    public void ConsultarFavoritos() {
+    	System.out.println("Favoritos: " + juegos);
+    }
+    public void ConsultarTurnoSemanal() {
+    	System.out.println("Turnos del empleado:");
+    	for (Turno t: turnos)
+    	{
+    		System.out.println(
+    			t.getDiaSemana() + " " +
+    			t.getHoraInicio() + " " +
+    			t.getHoraFinal()
+    			);
+    	}
+    }
     
-    public void Consultar_turno_semanal() {}
+    public void Solicitar_cambio_turno(String cambioDia, Turno turno, Empleado empleadoIntercambio) {
+    	SolicitudCambioTurno solicitud = new SolicitudCambioTurno(cambioDia, turno, empleadoIntercambio);
+    	solicitudes.add(solicitud);
+    	System.out.println("Solicitud de cambio de turno enviada");
+    	
+    }
     
-    public void Solicitar_cambio_turno(String cambio_dia, String tipo, int id_empleado_intercambio) {}
-    
-    public void Sugerir_producto(String nombre, double precio, String tipo, boolean alcoholica, boolean caliente, List<String> alergenos) {}
+    public void SugerirProducto(String nombre, double precio, String tipo, boolean alcoholica, boolean caliente, List<String> alergenos) {
+    	System.out.println("Producto sugerido: " + nombre);
+    }
 }
-

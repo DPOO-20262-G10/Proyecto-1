@@ -1,47 +1,75 @@
 package boardgamecafe.usuarios;
 
+import java.util.List;
+import java.util.ArrayList;
+
 public class Cliente extends Usuario {
     
-    public int id_cliente;
+    private int idCliente;
+    private List<JuegosDeMesa> juegos;
     
-    public Cliente(int id_cliente, String login, String password) {
+    public Cliente(int idCliente, String login, String password) {
         super(login, password);
-        this.id_cliente = id_cliente;
+        this.idCliente = idCliente;
+        this.juegos = new ArrayList<>();
     }
-
-    
-
-
-
     
     @Override
-    public void Iniciar_sesion(String login, String password) {}
+    public void IniciarSesion(String login, String password) {
+    	System.out.println("Inició sesión como Cliente");
+    }
     
     @Override
-    public void Cerrar_sesion() {}
+    public void CerrarSesion() {
+    	System.out.println("Cliente cierra sesión");
+    }
     
     @Override
-    public void Agregar_favorito(int id_juego) {}
+    public void AgregarFavorito(JuegoDeMesa juego) {
+    	juegos.add(juego);
+    	System.out.println("Juego agregado a favoritos");
+    }
     
     @Override
-    public void Eliminar_favorito(int id_juego) {}
+    public void EliminarFavorito(JuegoDeMesa juego) {
+    	juegos.remove(juego);
+    	System.out.println("Juego eliminado de favoritos");
+    }
     
     @Override
-    public void Consultar_favoritos() {}
+    public void ConsultarFavoritos() {
+    	System.out.println("Favoritos: " + juegos);
+    }
     
-    public void Tomar_mesa(int numero_personas, boolean hay_ninos, boolean hay_jovenes) {}
+    public void TomarMesa(int numeroPersonas, boolean hayNinos, boolean hayJovenes) {
+    	System.out.println("Mesa tomada");
+    }
     
-    public void Solicitar_prestamo(int id_juego1, int id_juego2, int id_mesa) {}
+    public void SolicitarPrestamo(int idJuego1, int idJuego2, int idMesa) {
+    	System.out.println("Solicitando préstamo");
+    }
     
-    public void Devolver_juego(int id_prestamo) {}
+    public void DevolverJuego(int idPrestamo) {
+    	System.out.println("Devolviendo juego");
+    }
     
-    public void Comprar_juego(int id_juego, int cantidad) {}
+    public void ComprarJuego(int idJuego, int cantidad) {
+    	System.out.println("Comprando juego");
+    }
     
-    public void Usar_puntos(int puntos) {}
+    public void UsarPuntos(int puntos) {
+    	System.out.println("Usando puntos");
+    }
     
-    public void Comprar_producto(int id_producto, int cantidad, double propina) {}
+    public void ComprarProducto(int idProducto, int cantidad, double propina) {
+    	System.out.println("Comprando producto");
+    }
     
-    public void Ver_alergenos(int id_producto) {}
+    public void VerAlergenos(int idProducto) {
+    	System.out.println("Consultando alérgenos");
+    }
     
-    public void Consultar_historial_compras() {}
+    public void ConsultarHistorialCompras() {
+    	System.out.println("Consultando historial");
+    }
 }

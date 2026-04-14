@@ -2,31 +2,39 @@ package boardgamecafe.usuarios;
 
 public class Administrador extends Usuario {
 
-    public int id_admin;
+	private int idAdmin;
+    private List<JuegosDeMesa> juegos;
 
-    public Administrador(int id_admin, String login, String password) {
+    public Administrador(int idAdmin, String login, String password) {
         super(login, password);
-        this.id_admin = id_admin;
+        this.idAdmin = idAdmin;
     }
 
     @Override
-    public void Iniciar_sesion(String login, String password) {
+    public void IniciarSesion(String login, String password) {
+    	System.out.println("Inició sesión como Administrador");
     }
 
     @Override
-    public void Cerrar_sesion() {
+    public void CerrarSesion() {
+    	System.out.println("Administrador cerró la sesión");
     }
 
     @Override
-    public void Agregar_favorito(int id_juego) {
+    public void AgregarFavorito(JuegoDeMesa juego) {
+    	juegos.add(juego);
+    	System.out.println("Juego agregado a favoritos");
     }
-
+    
     @Override
-    public void Eliminar_favorito(int id_juego) {
+    public void EliminarFavorito(JuegoDeMesa juego) {
+    	juegos.remove(juego);
+    	System.out.println("Juego eliminado de favoritos");
     }
-
+    
     @Override
-    public void Consultar_favoritos() {
+    public void ConsultarFavoritos() {
+    	System.out.println("Favoritos: " + juegos);
     }
-
+    
 }
