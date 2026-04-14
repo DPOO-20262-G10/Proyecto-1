@@ -8,6 +8,11 @@ public class Cliente extends Usuario {
         super(login, password);
         this.id_cliente = id_cliente;
     }
+
+    
+
+
+
     
     @Override
     public void Iniciar_sesion(String login, String password) {}
