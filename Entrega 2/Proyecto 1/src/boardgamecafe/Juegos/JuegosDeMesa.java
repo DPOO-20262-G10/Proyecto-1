@@ -1,77 +1,121 @@
 package boardgamecafe.Juegos;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class JuegosDeMesa {
 
+    private int idJuego;
     private String nombre;
     private Date anioPublicacion;
-    private String empresaMatriz;
     private int minJugadores;
     private int maxJugadores;
     private int edadMinima;
-    private String estadoJuego;
     private boolean esDificil;
-
-    private CategoriaJuego categoria;
+    private String categoria;
     private List<CopiaJuego> copias;
 
-    public JuegosDeMesa(String nombre,
-                        Date anioPublicacion,
-                        String empresaMatriz,
-                        int minJugadores,
-                        int maxJugadores,
-                        int edadMinima,
-                        String estadoJuego,
-                        boolean esDificil,
-                        CategoriaJuego categoria) {
+    public JuegosDeMesa() {
+        this.copias = new ArrayList<CopiaJuego>();
+    }
 
+    public JuegosDeMesa(int idJuego, String nombre, Date anioPublicacion, int minJugadores,
+            int maxJugadores, int edadMinima, String categoria, boolean esDificil) {
+        this.idJuego = idJuego;
         this.nombre = nombre;
         this.anioPublicacion = anioPublicacion;
-        this.empresaMatriz = empresaMatriz;
         this.minJugadores = minJugadores;
         this.maxJugadores = maxJugadores;
         this.edadMinima = edadMinima;
-        this.estadoJuego = estadoJuego;
-        this.esDificil = esDificil;
         this.categoria = categoria;
+        this.esDificil = esDificil;
+        this.copias = new ArrayList<CopiaJuego>();
+    }
+
+    public CopiaJuego obtenerCopiaDisponible() {
+        for (CopiaJuego c : copias) {
+            if (c.isDisponible()) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    public int contarCopiasDisponibles() {
+        int count = 0;
+
+        for (CopiaJuego c : copias) {
+            if (c.isDisponible())
+                count++;
+        }
+
+        return count;
+    }
+
+    // Getters y Setters
+    public int getIdJuego() {
+        return idJuego;
+    }
+
+    public void setIdJuego(int idJuego) {
+        this.idJuego = idJuego;
     }
 
     public String getNombre() {
         return nombre;
     }
 
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
     public Date getAnioPublicacion() {
         return anioPublicacion;
     }
 
-    public String getEmpresaMatriz() {
-        return empresaMatriz;
+    public void setAnioPublicacion(Date anioPublicacion) {
+        this.anioPublicacion = anioPublicacion;
     }
 
     public int getMinJugadores() {
         return minJugadores;
     }
 
+    public void setMinJugadores(int minJugadores) {
+        this.minJugadores = minJugadores;
+    }
+
     public int getMaxJugadores() {
         return maxJugadores;
+    }
+
+    public void setMaxJugadores(int maxJugadores) {
+        this.maxJugadores = maxJugadores;
     }
 
     public int getEdadMinima() {
         return edadMinima;
     }
 
-    public String getEstadoJuego() {
-        return estadoJuego;
+    public void setEdadMinima(int edadMinima) {
+        this.edadMinima = edadMinima;
     }
 
     public boolean isEsDificil() {
         return esDificil;
     }
 
-    public CategoriaJuego getCategoria() {
+    public void setEsDificil(boolean esDificil) {
+        this.esDificil = esDificil;
+    }
+
+    public String getCategoria() {
         return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
     }
 
     public List<CopiaJuego> getCopias() {
