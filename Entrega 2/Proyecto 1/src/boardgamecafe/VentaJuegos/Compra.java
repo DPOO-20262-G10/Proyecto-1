@@ -31,69 +31,83 @@ public class Compra {
             this.loginUsuario = loginUsuario;
         }      
 
-    // Getters
-    public int getIdCompra() {
+    public int getIdCompra() 
+    {
         return idCompra;
     }
 
-    public Date getFecha() {
+    public Date getFecha() 
+    {
         return fecha;
     }
 
-    public double getValor() {
+    public double getValor() 
+    {
         return valor;
     }
 
-    public double getImpuesto() {
+    public double getImpuesto() 
+    {
         return impuesto;
     }
 
-    public double getDescuento() {
+    public double getDescuento() 
+    {
         return descuento;
     }
 
-    public boolean isDescuentoAplicado() {
+    public boolean isDescuentoAplicado() 
+    {
         return descuentoAplicado;
     }
 
-    public List<JuegoVenta> getJuegos() {
+    public List<JuegoVenta> getJuegos() 
+    {
         return juegos;
     }
 
-    public String getLoginUsuario() {
+    public String getLoginUsuario() 
+    {
         return loginUsuario;
     }
 
-    // Setters
-    public void setIdCompra(int idCompra) {
+    public void setIdCompra(int idCompra) 
+    {
         this.idCompra = idCompra;
     }
 
-    public void setFecha(Date fecha) {
+    public void setFecha(Date fecha) 
+    {
         this.fecha = fecha;
     }
 
-    public void setValor(double valor) {
+    public void setValor(double valor) 
+    {
         this.valor = valor;
     }
 
-    public void setImpuesto(double impuesto) {
+    public void setImpuesto(double impuesto) 
+    {
         this.impuesto = impuesto;
     }
 
-    public void setDescuento(double descuento) {
+    public void setDescuento(double descuento) 
+    {
         this.descuento = descuento;
     }
 
-    public void setDescuentoAplicado(boolean descuentoAplicado) {
+    public void setDescuentoAplicado(boolean descuentoAplicado) 
+    {
         this.descuentoAplicado = descuentoAplicado;
     }
 
-    public void setJuegos(List<JuegoVenta> juegos) {
+    public void setJuegos(List<JuegoVenta> juegos) 
+    {
         this.juegos = juegos;
     }
 
-    public void setLoginUsuario(String loginUsuario) {
+    public void setLoginUsuario(String loginUsuario) 
+    {
         this.loginUsuario = loginUsuario;
     }
 }

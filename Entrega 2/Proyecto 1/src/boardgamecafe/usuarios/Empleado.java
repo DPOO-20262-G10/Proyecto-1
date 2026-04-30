@@ -3,8 +3,8 @@ package boardgamecafe.usuarios;
 import java.util.List;
 import java.util.ArrayList;
 
-import boardgamecafe.Turno;
-import boardgamecafe.SolicitudCambioTurno;
+import boardgamecafe.Turnos.SolicitudCambioTurno;
+import boardgamecafe.Turnos.Turno;
 
 public class Empleado extends Usuario{
 

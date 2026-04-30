@@ -11,20 +11,23 @@ public class JuegoVenta extends JuegosDeMesa {
         this.precio = precio;
     }
 
-    // Getters y Setters
-    public int getStock() {
+    public int getStock() 
+    {
         return stock;
     }
 
-    public void setStock(int stock) {
+    public void setStock(int stock) 
+	{
         this.stock = stock;
     }
 
-    public double getPrecio() {
+    public double getPrecio() 
+	{
         return precio;
     }
 
-    public void setPrecio(double precio) {
+    public void setPrecio(double precio) 
+    {
         this.precio = precio;
     }
 }

@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import boardgamecafe.Turnos.SolicitudCambioTurno;
+import boardgamecafe.Turnos.Turno;
 import boardgamecafe.menu.Producto;
 import boardgamecafe.pedidos.Compra;
 import boardgamecafe.pedidos.Pedido;

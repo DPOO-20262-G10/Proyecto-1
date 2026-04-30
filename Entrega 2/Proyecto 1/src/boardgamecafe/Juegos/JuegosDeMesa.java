@@ -20,8 +20,7 @@ public class JuegosDeMesa {
         this.copias = new ArrayList<CopiaJuego>();
     }
 
-    public JuegosDeMesa(int idJuego, String nombre, Date anioPublicacion, int minJugadores,
-            int maxJugadores, int edadMinima, String categoria, boolean esDificil) {
+    public JuegosDeMesa(int idJuego, String nombre, Date anioPublicacion, int minJugadores, int maxJugadores, int edadMinima, String categoria, boolean esDificil) {
         this.idJuego = idJuego;
         this.nombre = nombre;
         this.anioPublicacion = anioPublicacion;
@@ -53,76 +52,93 @@ public class JuegosDeMesa {
         return count;
     }
 
-    // Getters y Setters
-    public int getIdJuego() {
+    public int getIdJuego() 
+    {
         return idJuego;
     }
 
-    public void setIdJuego(int idJuego) {
+    public void setIdJuego(int idJuego) 
+    {
         this.idJuego = idJuego;
     }
 
-    public String getNombre() {
+    public String getNombre() 
+    {
         return nombre;
     }
 
-    public void setNombre(String nombre) {
+    public void setNombre(String nombre) 
+    {
         this.nombre = nombre;
     }
 
-    public Date getAnioPublicacion() {
+    public Date getAnioPublicacion() 
+    {
         return anioPublicacion;
     }
 
-    public void setAnioPublicacion(Date anioPublicacion) {
+    public void setAnioPublicacion(Date anioPublicacion) 
+	{
         this.anioPublicacion = anioPublicacion;
     }
 
-    public int getMinJugadores() {
+    public int getMinJugadores() 
+    {
         return minJugadores;
     }
 
-    public void setMinJugadores(int minJugadores) {
+    public void setMinJugadores(int minJugadores) 
+    {
         this.minJugadores = minJugadores;
     }
 
-    public int getMaxJugadores() {
+    public int getMaxJugadores() 
+    {
         return maxJugadores;
     }
 
-    public void setMaxJugadores(int maxJugadores) {
+    public void setMaxJugadores(int maxJugadores) 
+    {
         this.maxJugadores = maxJugadores;
     }
 
-    public int getEdadMinima() {
+    public int getEdadMinima() 
+    {
         return edadMinima;
     }
 
-    public void setEdadMinima(int edadMinima) {
+    public void setEdadMinima(int edadMinima) 
+    {
         this.edadMinima = edadMinima;
     }
 
-    public boolean isEsDificil() {
+    public boolean isEsDificil() 
+    {
         return esDificil;
     }
 
-    public void setEsDificil(boolean esDificil) {
+    public void setEsDificil(boolean esDificil) 
+    {
         this.esDificil = esDificil;
     }
 
-    public String getCategoria() {
+    public String getCategoria() 
+    {
         return categoria;
     }
 
-    public void setCategoria(String categoria) {
+    public void setCategoria(String categoria) 
+    {
         this.categoria = categoria;
     }
 
-    public List<CopiaJuego> getCopias() {
+    public List<CopiaJuego> getCopias() 
+    {
         return copias;
     }
 
-    public void setCopias(List<CopiaJuego> copias) {
+    public void setCopias(List<CopiaJuego> copias) 
+    {
         this.copias = copias;
     }
 }

@@ -1,73 +1,123 @@
 package boardgamecafe.pedidos;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.ArrayList;
 import boardgamecafe.menu.Producto;
 
+public class Pedido {
 
+    private int idPedido;
+    private Date fecha;
+    private double propina;
+    private double descuento;
+    private double descuentoAplicado;
+    private List<Producto> productos;
+    private String loginUsuario;
 
-public class Pedido 
-{
-	private Date fecha;
-	
-	private List<Producto> productos;
-	
-	private double propina;
-	
-	private double descuento;
-	
-	private boolean descuentoAplicado;
-	
-	public Pedido(Date fecha, double propina, double descuento, boolean descuentoAplicado)
+    private static final double IMPUESTO_CONSUMO = 0.08;
+
+    public Pedido(int idPedido, Date fecha, double propina, double descuento, String loginUsuario) {
+        this.idPedido = idPedido;
+        this.fecha = fecha;
+        this.propina = propina;
+        this.descuento = descuento;
+        this.descuentoAplicado = 0.0;
+        this.productos = new ArrayList<Producto>();
+        this.loginUsuario = loginUsuario;
+    }
+
+    public void agregarProducto(Producto producto) {
+        productos.add(producto);
+    }
+
+    public double calcularSubtotal() {
+        double subtotal = 0.0;
+        for (Producto p : productos) {
+            subtotal += p.getPrecio();
+        }
+        return subtotal;
+    }
+
+    public double calcularImpuestoConsumo() {
+        return calcularSubtotal() * IMPUESTO_CONSUMO;
+    }
+
+    public double calcularTotal() {
+        double subtotal = calcularSubtotal();
+        double impuesto = calcularImpuestoConsumo();
+        double totalBase = subtotal + impuesto + propina;
+        return totalBase - descuento - descuentoAplicado;
+    }
+
+    public List<Producto> getProductos() 
 	{
-		this.fecha = fecha;
-		this.productos = new ArrayList<>();
-		this.propina = propina;
-		this.descuento = descuento;
-		this.descuentoAplicado = descuentoAplicado;
-	}
-	
-	public Date getFecha()
+        return productos;
+    }
+
+    public int getIdPedido() 
 	{
-		return fecha;
-	}
-	
-	public void agregarProducto(Producto producto)
+        return idPedido;
+    }
+
+    public void setIdPedido(int idPedido) 
 	{
-		productos.add(producto);
-	}
-	
-	public List<Producto> getProductos()
+        this.idPedido = idPedido;
+    }
+
+    public Date getFecha() 
 	{
-		return productos;
-	}
-	
-	public double calcularSubtotal()
+        return fecha;
+    }
+
+    public void setFecha(Date fecha) 
 	{
-		double subtotal = 0;
-		
-		for (Producto p : productos)
-		{
-			subtotal += p.getPrecio();
-		}
-		return subtotal;
-	}
-	
-	public double calcularImpuestoConsumo()
+        this.fecha = fecha;
+    }
+
+    public double getPropina() 
 	{
-		return calcularSubtotal() * 0.08;
-	}
-	
-	public double calcularTotal()
+        return propina;
+    }
+
+    public void setPropina(double propina) 
 	{
-		double total = calcularSubtotal() + calcularImpuestoConsumo() + propina;
-		
-		if (descuentoAplicado)
-		{
-			total = total - descuento;
-		}
-		
-		return total;
-	}
+        this.propina = propina;
+    }
+
+    public double getDescuento() 
+	{
+        return descuento;
+    }
+
+    public void setDescuento(double descuento) 
+	{
+        this.descuento = descuento;
+    }
+
+    public double getDescuentoAplicado() 
+	{
+        return descuentoAplicado;
+    }
+
+    public void setDescuentoAplicado(double descuentoAplicado) 
+	{
+        this.descuentoAplicado = descuentoAplicado;
+    }
+
+    
+	public void setProductos(List<Producto> productos) 
+	{
+        this.productos = productos;
+    }
+
+    public String getLoginUsuario() 
+	{
+        return loginUsuario;
+    }
+
+    public void setLoginUsuario(String loginUsuario) 
+	{
+        this.loginUsuario = loginUsuario;
+    }
 }
