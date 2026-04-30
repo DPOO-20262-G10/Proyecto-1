@@ -1,4 +1,4 @@
-package boardgamecafe.VentaJuegos;
+package boardgamecafe.Juegos;
 
 public class JuegoVenta {
 
