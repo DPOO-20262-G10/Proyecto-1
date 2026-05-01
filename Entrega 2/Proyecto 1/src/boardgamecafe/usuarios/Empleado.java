@@ -1,77 +1,120 @@
 package boardgamecafe.usuarios;
 
-import java.util.List;
 import java.util.ArrayList;
-
-import boardgamecafe.Turnos.SolicitudCambioTurno;
+import java.util.List;
+import boardgamecafe.Juegos.JuegosDeMesa;
 import boardgamecafe.Turnos.Turno;
+import boardgamecafe.Turnos.SolicitudCambioTurno;
+import boardgamecafe.menu.Producto;
+import boardgamecafe.menu.Bebida;
+import boardgamecafe.menu.Pasteleria;
 
-public class Empleado extends Usuario{
 
-	private int idEmpleado;
-	private boolean enTurno;
+public class Empleado extends Usuario {
+
+    private int idEmpleado;
+    private boolean enTurno;
     private String codigoDescuento;
     private List<JuegosDeMesa> juegos;
     private List<Turno> turnos;
     private List<SolicitudCambioTurno> solicitudes;
-    
-    public Empleado(int idEmpleado, String login, String password, String codigoDescuento) {
-        super(login, password);
+
+    public Empleado(int idEmpleado, String login, String password, String nombre) {
+        super(login, password, nombre);
         this.idEmpleado = idEmpleado;
         this.enTurno = false;
-        this.codigoDescuento = codigoDescuento;
-        this.juegos = new ArrayList<>();
-        this.turnos = new ArrayList<>();
-        this.solicitudes = new ArrayList<>();
+        this.codigoDescuento = "EMP" + idEmpleado;
+        this.juegos = new ArrayList<JuegosDeMesa>();
+        this.turnos = new ArrayList<Turno>();
+        this.solicitudes = new ArrayList<SolicitudCambioTurno>();
     }
-	
-    @Override
-    public void IniciarSesion(String login, String password) {
-    	System.out.println("Inició sesion como Empleado");
+
+    public void consultarTurnoSemanal() {
+        System.out.println("Turnos de " + getNombre() + ":");
+        if (turnos.isEmpty()) {
+            System.out.println("  (sin turnos asignados)");
+
+        } else {
+
+            for (Turno t : turnos) {
+                System.out.println("  " + t.getDiaSemana() + " " + t.getHoraInicio() + " - " + t.getHoraFinal());
+            }
+        }
+    }
+
+    
+    public Producto sugerirProducto(String nombre, double precio, String tipo, boolean alcoholica, boolean caliente, List<String> alergenos) {
+    if (tipo.equalsIgnoreCase("Bebida")) {
+        Bebida b = new Bebida(nombre, precio, alcoholica, caliente);
+        
+        System.out.println("Sugerencia de bebida enviada: " + nombre);
+        return b;
+
+    } else {
+        Pasteleria p = new Pasteleria(nombre, precio, alergenos);
+        System.out.println("Sugerencia de pasteleria enviada: " + nombre);
+
+        return p;
+    }
+}
+
+
+    public int getIdEmpleado() 
+    { 
+        return idEmpleado; 
+    }
+
+    public void setIdEmpleado(int idEmpleado) 
+    { 
+        this.idEmpleado = idEmpleado; 
+    }
+
+    public boolean isEnTurno() 
+    { 
+        return enTurno; 
+    }
+
+    public void setEnTurno(boolean enTurno) 
+    { 
+        this.enTurno = enTurno; 
+    }
+
+    public String getCodigoDescuento() 
+    { 
+        return codigoDescuento; 
+    }
+
+    public void setCodigoDescuento(String codigoDescuento) 
+    { 
+        this.codigoDescuento = codigoDescuento; 
+    }
+
+    public List<JuegosDeMesa> getJuegos() { 
+        return juegos; 
     }
     
-    @Override
-    public void CerrarSesion() {
-    	System.out.println("Empleado cierra sesión");
+    public void setJuegos(List<JuegosDeMesa> juegos) 
+    { 
+        this.juegos = juegos; 
     }
-    
-    @Override
-    public void AgregarFavorito(JuegoDeMesa juego) {
-    	juegos.add(juego);
-    	System.out.println("Juego agregado a favoritos");
+
+    public List<Turno> getTurnos() 
+    { 
+        return turnos; 
     }
-    
-    @Override
-    public void EliminarFavorito(JuegoDeMesa juego) {
-    	juegos.remove(juego);
-    	System.out.println("Juego eliminado de favoritos");
+
+    public void setTurnos(List<Turno> turnos) 
+    { 
+        this.turnos = turnos; 
     }
-    
-    
-    @Override
-    public void ConsultarFavoritos() {
-    	System.out.println("Favoritos: " + juegos);
+
+    public List<SolicitudCambioTurno> getSolicitudes() 
+    { 
+        return solicitudes; 
     }
-    public void ConsultarTurnoSemanal() {
-    	System.out.println("Turnos del empleado:");
-    	for (Turno t: turnos)
-    	{
-    		System.out.println(
-    			t.getDiaSemana() + " " +
-    			t.getHoraInicio() + " " +
-    			t.getHoraFinal()
-    			);
-    	}
-    }
-    
-    public void Solicitar_cambio_turno(String cambioDia, Turno turno, Empleado empleadoIntercambio) {
-    	SolicitudCambioTurno solicitud = new SolicitudCambioTurno(cambioDia, turno, empleadoIntercambio);
-    	solicitudes.add(solicitud);
-    	System.out.println("Solicitud de cambio de turno enviada");
-    	
-    }
-    
-    public void SugerirProducto(String nombre, double precio, String tipo, boolean alcoholica, boolean caliente, List<String> alergenos) {
-    	System.out.println("Producto sugerido: " + nombre);
+
+    public void setSolicitudes(List<SolicitudCambioTurno> solicitudes) 
+    { 
+        this.solicitudes = solicitudes; 
     }
 }

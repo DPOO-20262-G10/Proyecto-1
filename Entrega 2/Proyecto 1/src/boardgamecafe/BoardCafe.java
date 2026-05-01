@@ -11,6 +11,7 @@ import boardgamecafe.Turnos.SolicitudCambioTurno;
 import boardgamecafe.Turnos.Turno;
 import boardgamecafe.menu.Producto;
 import boardgamecafe.pedidos.Compra;
+import boardgamecafe.pedidos.Mesa;
 import boardgamecafe.pedidos.Pedido;
 import boardgamecafe.pedidos.Prestamo;
 import boardgamecafe.usuarios.Administrador;

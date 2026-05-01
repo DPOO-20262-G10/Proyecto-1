@@ -33,9 +33,11 @@ public class Pedido {
 
     public double calcularSubtotal() {
         double subtotal = 0.0;
+
         for (Producto p : productos) {
             subtotal += p.getPrecio();
         }
+        
         return subtotal;
     }
 
@@ -43,7 +45,7 @@ public class Pedido {
         return calcularSubtotal() * IMPUESTO_CONSUMO;
     }
 
-    public double calcularTotal() {
+    public double calcularTotal(){
         double subtotal = calcularSubtotal();
         double impuesto = calcularImpuestoConsumo();
         double totalBase = subtotal + impuesto + propina;
