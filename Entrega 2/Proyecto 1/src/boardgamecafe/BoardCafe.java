@@ -9,110 +9,165 @@ import java.util.Map;
 
 import boardgamecafe.Turnos.SolicitudCambioTurno;
 import boardgamecafe.Turnos.Turno;
+import boardgamecafe.menu.Pasteleria;
 import boardgamecafe.menu.Producto;
-import boardgamecafe.pedidos.Compra;
+import boardgamecafe.VentaJuegos.Compra;
 import boardgamecafe.pedidos.Mesa;
 import boardgamecafe.pedidos.Pedido;
 import boardgamecafe.pedidos.Prestamo;
 import boardgamecafe.usuarios.Administrador;
 import boardgamecafe.usuarios.Cliente;
 import boardgamecafe.usuarios.Cocinero;
+import boardgamecafe.usuarios.Empleado;
 import boardgamecafe.usuarios.Mesero;
 import boardgamecafe.usuarios.Usuario;
+import boardgamecafe.Juegos.JuegosDeMesa;
+import boardgamecafe.Juegos.CopiaJuego;
 
 public class BoardCafe {
 
     private Map<String, Usuario> usuarios;
-    private Map<Integer, JuegosDeMesa> juegos;
+    private Map<Integer, JuegosDeMesa> juegosDeMesa;
     private Map<Integer, CopiaJuego> copias;
-    private Map<Integer, Producto> productos;
     private Map<Integer, Mesa> mesas;
-    private List<Pedido> pedidos;
+    private Map<Integer, Producto> productos;
     private List<Compra> compras;
+    private List<Pedido> pedidos;
     private List<Prestamo> prestamos;
     private List<Turno> turnos;
     private List<SolicitudCambioTurno> solicitudes;
-    private int nextJuegoId = 1;
-    private int nextPedidoId = 1;
-    private int nextPrestamoId = 1;
-    private int nextCompraId = 1;
+    private Usuario usuarioActivo;
 
-    public BoardCafe() {
-        this.usuarios = new HashMap<>();
-        this.juegos = new HashMap<>();
-        this.copias = new HashMap<>();
-        this.productos = new HashMap<>();
-        this.mesas = new HashMap<>();
-        this.pedidos = new ArrayList<>();
-        this.compras = new ArrayList<>();
-        this.prestamos = new ArrayList<>();
-        this.turnos = new ArrayList<>();
-        this.solicitudes = new ArrayList<>();
-    }
+    private int ultimoIdUsuario = 1;
+    private int ultimoIdJuego = 1;
+    private int ultimoIdCopia = 1;
+    private int ultimoIdMesa = 1;
+    private int ultimoIdProducto = 1;
+    private int ultimoIdCompra = 1;
+    private int ultimoIdPedido = 1;
+    private int ultimoIdPrestamo = 1;
+    private int ultimoIdTurno = 1;
+    private int ultimoIdSolicitud = 1;
 
+    //la parte de inicio del usuario
 
     public void registrarUsuario(String nombre, String login, String password, String tipo) {
-        if (usuarios.containsKey(login)) {
-            System.out.println("El login ya existe");
-            return;
+        if (usuarios.containsKey(login))
+            throw new IllegalArgumentException("El login ya existe.");
+
+        Usuario u;
+        if (tipo.equalsIgnoreCase("cliente")) 
+        {
+            u = new Cliente(ultimoIdUsuario++, login, password, nombre);
+        } 
+        else if (tipo.equalsIgnoreCase("mesero")) 
+        {
+            u = new Mesero(ultimoIdUsuario++, login, password, nombre);
+        } 
+        else if (tipo.equalsIgnoreCase("cocinero")) 
+        {
+            u = new Cocinero(ultimoIdUsuario++, login, password, nombre);
+        } 
+        else if (tipo.equalsIgnoreCase("administrador")) 
+        {
+            u = new Administrador(ultimoIdUsuario++, login, password, nombre);
         }
-        int nuevoId = usuarios.size() + 1;
-        if (tipo.equals("cliente")) {
-            usuarios.put(login, new Cliente(nuevoId, login, password, this));
-        } else if (tipo.equals("mesero")) {
-            usuarios.put(login, new Mesero(nuevoId, login, password, this));
-        } else if (tipo.equals("cocinero")) {
-            usuarios.put(login, new Cocinero(nuevoId, login, password, this));
-        } else if (tipo.equals("administrador")) {
-            usuarios.put(login, new Administrador(nuevoId, login, password, this));
-        } else {
-            System.out.println("Tipo de usuario invalido");
+        else 
+        {
+            u = new Empleado(ultimoIdUsuario++, login, password, nombre);
         }
+
+        usuarios.put(login, u);
+        guardarTodo();
     }
 
-
     public boolean login(String login, String password) {
-        Usuario user = usuarios.get(login);
-        if (user != null && user.password.equals(password)) {
-            System.out.println("Login exitoso: " + login);
+        Usuario u = usuarios.get(login);
+
+        if (u != null && u.iniciarSesion(login, password)) {
+            usuarioActivo = u;
             return true;
         }
-        System.out.println("Login fallido: " + login);
+
         return false;
     }
 
-    public void logout(String login) {
-        System.out.println("Logout: " + login);
+    public void logout() {
+        if (usuarioActivo != null) {
+            usuarioActivo.cerrarSesion();
+            usuarioActivo = null;
+        }
     }
 
-
-    public void agregarJuego(String nombre, Date anioPublicacion, String empresaMatriz, int minJugadores, int maxJugadores, int edadMinima, String categoria, boolean esDificil) {
-        JuegoDeMesa juego = new JuegoDeMesa();
-        juego.id = nextJuegoId++;
-        juego.nombre = nombre;
-        juego.anioPublicacion = anioPublicacion;
-        juego.empresaMatriz = empresaMatriz;
-        juego.minJugadores = minJugadores;
-        juego.maxJugadores = maxJugadores;
-        juego.edadMinima = edadMinima;
-        juego.categoria = categoria;
-        juego.esDificil = esDificil;
-        juegos.put(juego.id, juego);
-        System.out.println("Juego agregado: " + nombre + " (ID: " + juego.id + ")");
+    public List<JuegosDeMesa> consultarCatalogo() {
+        return new ArrayList<>(juegosDeMesa.values());
     }
 
-    public JuegoDeMesa buscarJuego(String nombre) {
-        for (JuegoDeMesa juego : juegos.values()) {
-            if (juego.nombre.equalsIgnoreCase(nombre)) {
-                return juego;
-            }
+    public JuegosDeMesa buscarJuego(String nombre) {
+        for (JuegosDeMesa j : juegosDeMesa.values()) {
+            if (j.getNombre().equalsIgnoreCase(nombre))
+                return j;
         }
         return null;
     }
 
+    public List<String> verAlergenoS(int idProducto) {
+        Producto p = productos.get(idProducto);
 
+        if (p instanceof Pasteleria)
+            return ((Pasteleria) p).getAlergenos();
 
+        return new ArrayList<>();
+    }
 
+    public List<Compra> consultarHistorialCompras() {
+        List<Compra> res = new ArrayList<>();
+        for (Compra c : compras) {
+            if (c.getLoginUsuario().equals(usuarioActivo.getLogin()))
+                res.add(c);
+        }
+        return res;
+    }
 
+    public List<Pedido> consultarHistorialPedidos() {
+        List<Pedido> res = new ArrayList<>();
+        for (Pedido p : pedidos) {
+            if (p.getLoginUsuario().equals(usuarioActivo.getLogin()))
+                res.add(p);
+        }
+        return res;
+    }
+
+    public void agregarFavorito(int idJuego) {
+        if (usuarioActivo != null) {
+            usuarioActivo.agregarFavorito(idJuego);
+            guardarTodo();
+        }
+    }
+
+    public void eliminarFavorito(int idJuego) {
+        if (usuarioActivo != null) {
+            usuarioActivo.eliminarFavorito(idJuego);
+            guardarTodo();
+        }
+    }
+
+    public List<JuegosDeMesa> consultarFavoritos() {
+        List<JuegosDeMesa> favs = new ArrayList<>();
+
+        if (usuarioActivo != null) {
+            for (int id : usuarioActivo.getFavoritos()) {
+                JuegosDeMesa j = juegosDeMesa.get(id);
+                if (j != null)
+                    favs.add(j);
+            }
+        }
+
+        return favs;
+    }
+
+    public Usuario getUsuarioActivo() {
+        return usuarioActivo;
+    }
 
 }
