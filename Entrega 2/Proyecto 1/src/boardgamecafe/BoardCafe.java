@@ -55,6 +55,20 @@ public class BoardCafe {
     private int ultimoIdTurno = 1;
     private int ultimoIdSolicitud = 1;
 
+    public BoardCafe() {
+        usuarios      = new HashMap<String, Usuario>();
+        juegosDeMesa  = new HashMap<Integer, JuegosDeMesa>();
+        copias        = new HashMap<Integer, CopiaJuego>();
+        mesas         = new HashMap<Integer, Mesa>();
+        productos     = new HashMap<Integer, Producto>();
+        compras       = new ArrayList<Compra>();
+        pedidos       = new ArrayList<Pedido>();
+        prestamos     = new ArrayList<Prestamo>();
+        turnos        = new ArrayList<Turno>();
+        solicitudes   = new ArrayList<SolicitudCambioTurno>();
+        usuarioActivo = null;
+    }
+
     //la persistencia la cual sirve para que el guardarTodo funcione
 
 
