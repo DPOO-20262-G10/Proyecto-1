@@ -79,6 +79,14 @@ public class BoardCafe {
 
     //la persistencia la cual sirve para que el guardarTodo funcione
 
+
+
+
+
+
+
+    
+
     // Aqui iria la parte de torneos osea la logica y funciones y tal
 
 
@@ -202,6 +210,7 @@ public class BoardCafe {
         if (usuarioActivo != null) {
             for (int id : usuarioActivo.getFavoritos()) {
                 JuegosDeMesa j = juegosDeMesa.get(id);
+
                 if (j != null)
                     favs.add(j);
             }
@@ -237,9 +246,9 @@ public class BoardCafe {
             throw new IllegalArgumentException("Solo empleados pueden solicitar cambio de turno.");
 
         Empleado emp = (Empleado) usuarioActivo;
-
         Empleado inter = null;
         boolean encontrado = false;
+
         for (Usuario u : usuarios.values()) {
             if (!encontrado && u instanceof Empleado && ((Empleado) u).getIdEmpleado() == idEmpleadoIntercambio) {
                 inter = (Empleado) u;
@@ -251,6 +260,7 @@ public class BoardCafe {
             throw new IllegalArgumentException("Empleado intercambio no existe.");
 
         SolicitudCambioTurno s = new SolicitudCambioTurno(ultimoIdSolicitud++, cambioDia, emp.getTurnos().get(0), emp, inter);
+        
         solicitudes.add(s);
         emp.getSolicitudes().add(s);
         guardarTodo();
