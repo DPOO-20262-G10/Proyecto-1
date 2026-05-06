@@ -106,6 +106,13 @@ public class BoardCafe {
         if (usuarios.containsKey(login))
             throw new IllegalArgumentException("El login ya existe.");
 
+        if (nombre == null || nombre.trim().length() == 0)
+            throw new IllegalArgumentException("El nombre no puede estar vacio.");
+        if (login == null || login.trim().length() == 0)
+            throw new IllegalArgumentException("El login no puede estar vacio.");
+        if (password == null || password.trim().length() == 0)
+            throw new IllegalArgumentException("La password no puede estar vacia.");
+
         Usuario u;
 
         if (tipo.equalsIgnoreCase("cliente")) 
@@ -124,9 +131,13 @@ public class BoardCafe {
         {
             u = new Administrador(ultimoIdUsuario++, login, password, nombre);
         }
-        else 
+        else if (tipo.equalsIgnoreCase("empleado"))
         {
             u = new Empleado(ultimoIdUsuario++, login, password, nombre);
+        }
+        else
+        {
+            throw new IllegalArgumentException("Tipo de usuario invalido.");
         }
 
         usuarios.put(login, u);
@@ -191,6 +202,10 @@ public class BoardCafe {
     }
 
     public void agregarFavorito(int idJuego) {
+
+        if (!juegosDeMesa.containsKey(idJuego))
+            throw new IllegalArgumentException("Juego no existe.");
+
         if (usuarioActivo != null) {
             usuarioActivo.agregarFavorito(idJuego);
             guardarTodo();
@@ -231,6 +246,13 @@ public class BoardCafe {
     public void sugerirProducto(String nombre, double precio, String tipo, boolean alcoholica, boolean caliente, List<String> alergenos) {
         if (!(usuarioActivo instanceof Empleado))
             throw new IllegalArgumentException("Solo empleado.");
+        if (nombre == null || nombre.trim().length() == 0)
+            throw new IllegalArgumentException("El nombre del producto no puede estar vacio.");
+        if (precio <= 0)
+            throw new IllegalArgumentException("El precio debe ser mayor que cero.");
+        if (!tipo.equalsIgnoreCase("Bebida") && !tipo.equalsIgnoreCase("Pasteleria"))
+            throw new IllegalArgumentException("El tipo de producto debe ser Bebida o Pasteleria.");
+
 
         Empleado e = (Empleado) usuarioActivo;
         Producto p = e.sugerirProducto(nombre, precio, tipo, alcoholica, caliente, alergenos);
@@ -244,6 +266,13 @@ public class BoardCafe {
     public void solicitarCambioTurno(String cambioDia, String tipo, int idEmpleadoIntercambio) {
         if (!(usuarioActivo instanceof Empleado))
             throw new IllegalArgumentException("Solo empleados pueden solicitar cambio de turno.");
+
+        if (!tipo.equalsIgnoreCase("cambio") && !tipo.equalsIgnoreCase("intercambio"))
+            throw new IllegalArgumentException("El tipo debe ser cambio o intercambio.");
+
+        if (cambioDia == null || cambioDia.trim().length() == 0)
+            throw new IllegalArgumentException("El dia de cambio no puede estar vacio.");
+
 
         Empleado emp = (Empleado) usuarioActivo;
         Empleado inter = null;
@@ -259,6 +288,9 @@ public class BoardCafe {
         if (inter == null)
             throw new IllegalArgumentException("Empleado intercambio no existe.");
 
+        if (emp.getTurnos().isEmpty())
+            throw new IllegalArgumentException("El empleado no tiene turnos asignados.");
+
         SolicitudCambioTurno s = new SolicitudCambioTurno(ultimoIdSolicitud++, cambioDia, emp.getTurnos().get(0), emp, inter);
         
         solicitudes.add(s);
@@ -273,6 +305,11 @@ public class BoardCafe {
         if (!(usuarioActivo instanceof Mesero))
             throw new IllegalArgumentException("Solo mesero.");
 
+        for (int i = 0; i < idsJuegos.size(); i++) {
+            if (!juegosDeMesa.containsKey(idsJuegos.get(i)))
+                throw new IllegalArgumentException("Juego dificil no existe: " + idsJuegos.get(i));
+        }
+
         ((Mesero) usuarioActivo).registrarJuegosDificiles(idsJuegos);
         guardarTodo();
     }
@@ -282,6 +319,16 @@ public class BoardCafe {
     public void agregarJuego(String nombre, Date anioPublicacion, int minJugadores, int maxJugadores, int edadMinima, String categoria, boolean esDificil) {
         if (!(usuarioActivo instanceof Administrador))
             throw new IllegalArgumentException("Solo Administrador puede agregar juegos.");
+        if (nombre == null || nombre.trim().length() == 0)
+            throw new IllegalArgumentException("El nombre del juego no puede estar vacio.");
+        if (anioPublicacion == null)
+            throw new IllegalArgumentException("El año de publicacion no puede estar vacio.");
+        if (minJugadores <= 0 || maxJugadores < minJugadores)
+            throw new IllegalArgumentException("Rango de jugadores invalido.");
+        if (edadMinima < 0)
+            throw new IllegalArgumentException("Edad minima invalida.");
+        if (categoria == null || categoria.trim().length() == 0)
+            throw new IllegalArgumentException("La categoria no puede estar vacia.");
 
         JuegosDeMesa j = new JuegosDeMesa(ultimoIdJuego++, nombre, anioPublicacion, minJugadores, maxJugadores, edadMinima, categoria, esDificil);
         juegosDeMesa.put(j.getIdJuego(), j);
@@ -291,36 +338,49 @@ public class BoardCafe {
     public void crearTurno(int idEmpleado, String diaSemana, Time horaInicio, Time horaFinal) {
         if (!(usuarioActivo instanceof Administrador))
             throw new IllegalArgumentException("Solo admin.");
+        if (diaSemana == null || diaSemana.trim().length() == 0)
+            throw new IllegalArgumentException("El dia de la semana no puede estar vacio.");
 
-        Turno t = new Turno(ultimoIdTurno++, diaSemana, horaInicio, horaFinal);
-        turnos.add(t);
-
+        Empleado empleadoTurno = null;
         for (Usuario u : usuarios.values()) {
             if (u instanceof Empleado && ((Empleado) u).getIdEmpleado() == idEmpleado) 
                 
             {
-                ((Empleado) u).getTurnos().add(t);
+                empleadoTurno = (Empleado) u;
             }
         }
+        if (empleadoTurno == null)
+            throw new IllegalArgumentException("Empleado no existe.");
 
+        Turno t = new Turno(ultimoIdTurno++, diaSemana, horaInicio, horaFinal);
+        empleadoTurno.getTurnos().add(t);
+        turnos.add(t);
         guardarTodo();
     }
 
     public void modificarTurno(int idEmpleado, String diaSemana, Time horaInicio, Time horaFinal) {
         if (!(usuarioActivo instanceof Administrador))
             throw new IllegalArgumentException("Solo admin.");
+        boolean empleadoEncontrado = false;
+        boolean turnoEncontrado = false;
 
         for (Usuario u : usuarios.values()) {
             if (u instanceof Empleado && ((Empleado) u).getIdEmpleado() == idEmpleado) {
+                empleadoEncontrado = true;
                 for (Turno t : ((Empleado) u).getTurnos()) {
                     if (t.getDiaSemana().equalsIgnoreCase(diaSemana)) 
                     {
                         t.setHoraInicio(horaInicio);
                         t.setHoraFinal(horaFinal);
+                        turnoEncontrado = true;
                     }
                 }
             }
         }
+        if (!empleadoEncontrado)
+            throw new IllegalArgumentException("Empleado no existe.");
+        if (!turnoEncontrado)
+            throw new IllegalArgumentException("Turno no encontrado para ese empleado y dia.");
 
         guardarTodo();
     }
@@ -346,6 +406,7 @@ public class BoardCafe {
                 return;
             }
         }
+        throw new IllegalArgumentException("Solicitud no existe.");
     }
 
     public void rechazarCambioTurno(int idSolicitud) {
@@ -359,6 +420,7 @@ public class BoardCafe {
                 return;
             }
         }
+        throw new IllegalArgumentException("Solicitud no existe.");
     }
 
     public void aprobarSugerencia(int idProducto) {
@@ -366,16 +428,18 @@ public class BoardCafe {
             throw new IllegalArgumentException("Solo admin.");
 
         Producto p = productos.get(idProducto);
-        if (p != null) {
-            p.setAprobado(true);
-            guardarTodo();
-        }
+        if (p == null)
+            throw new IllegalArgumentException("Producto no existe.");
+        p.setAprobado(true);
+        guardarTodo();
     }
 
     public void rechazarSugerencia(int idProducto) {
         if (!(usuarioActivo instanceof Administrador))
             throw new IllegalArgumentException("Solo admin.");
 
+        if (!productos.containsKey(idProducto))
+            throw new IllegalArgumentException("Producto no existe.");
         productos.remove(idProducto);
         guardarTodo();
     }
@@ -400,6 +464,10 @@ public class BoardCafe {
                 copias.put(c.getIdCopia(), c);
             }
         }
+        else
+        {
+            throw new IllegalArgumentException("Tipo de inventario invalido o juego no disponible para venta.");
+        }
 
         guardarTodo();
     }
@@ -407,6 +475,58 @@ public class BoardCafe {
     public void moverJuegoEntreInventarios(int idJuego, int cantidad, String tipoOrigen) {
         if (!(usuarioActivo instanceof Administrador))
             throw new IllegalArgumentException("Solo admin.");
+
+        if (cantidad <= 0)
+            throw new IllegalArgumentException("La cantidad debe ser mayor que cero.");
+
+        JuegosDeMesa j = juegosDeMesa.get(idJuego);
+        if (j == null)
+            throw new IllegalArgumentException("Juego no existe.");
+        if (!tipoOrigen.equalsIgnoreCase("venta") && !tipoOrigen.equalsIgnoreCase("prestamo"))
+            throw new IllegalArgumentException("Tipo origen invalido.");
+
+        if (tipoOrigen.equalsIgnoreCase("venta")) {
+            if (!(j instanceof JuegoVenta))
+                throw new IllegalArgumentException("El juego no tiene inventario de venta.");
+
+            JuegoVenta juegoVenta = (JuegoVenta) j;
+            if (juegoVenta.getStock() < cantidad)
+                throw new IllegalArgumentException("No hay stock suficiente en venta.");
+
+            juegoVenta.setStock(juegoVenta.getStock() - cantidad);
+
+            for (int i = 0; i < cantidad; i++) {
+                CopiaJuego copia = new CopiaJuego(ultimoIdCopia++, true, "Disponible");
+                j.getCopias().add(copia);
+                copias.put(copia.getIdCopia(), copia);
+            }
+        } 
+        else 
+        {
+            if (!(j instanceof JuegoVenta))
+                throw new IllegalArgumentException("El juego no tiene inventario de venta para recibir copias.");
+
+            int movidas = 0;
+            List<CopiaJuego> copiasAMover = new ArrayList<CopiaJuego>();
+
+            for (CopiaJuego c : j.getCopias()) {
+                if (movidas < cantidad && c.isDisponible()) {
+                    copiasAMover.add(c);
+                    movidas++;
+                }
+            }
+
+            if (movidas < cantidad)
+                throw new IllegalArgumentException("No hay copias disponibles suficientes en prestamo.");
+
+            for (CopiaJuego c : copiasAMover) {
+                j.getCopias().remove(c);
+                copias.remove(c.getIdCopia());
+            }
+
+            JuegoVenta juegoVenta = (JuegoVenta) j;
+            juegoVenta.setStock(juegoVenta.getStock() + cantidad);
+        }
 
         guardarTodo();
     }
@@ -416,10 +536,10 @@ public class BoardCafe {
             throw new IllegalArgumentException("Solo admin.");
 
         CopiaJuego c = copias.get(idCopia);
-        if (c != null) {
-            c.setEstadoJuego("Desaparecido");
-            guardarTodo();
-        }
+        if (c == null)
+            throw new IllegalArgumentException("Copia no existe.");
+        c.setEstadoJuego("Desaparecido");
+        guardarTodo();
     }
 
     public Map<JuegosDeMesa, List<CopiaJuego>> verInventarioCompleto() {
@@ -436,9 +556,85 @@ public class BoardCafe {
     public String generarReporteVentas(Date fechaInicio, Date fechaFin, String agrupacion, String tipoVenta) {
         if (!(usuarioActivo instanceof Administrador))
             throw new IllegalArgumentException("Solo admin.");
+        if (!tipoVenta.equalsIgnoreCase("juegos") && !tipoVenta.equalsIgnoreCase("cafe") && !tipoVenta.equalsIgnoreCase("ambos"))
+            throw new IllegalArgumentException("Tipo de venta invalido.");
 
-        return "Reporte de Ventas Generado.";
+        ArrayList<String> nombres = new ArrayList<String>();
+        ArrayList<Integer> cantidades = new ArrayList<Integer>();
+        ArrayList<Double> totales = new ArrayList<Double>();
+
+        double totalJuegos = 0;
+        double totalCafe = 0;
+
+        if (tipoVenta.equalsIgnoreCase("juegos") || tipoVenta.equalsIgnoreCase("ambos")) {
+            for (Compra c : compras) {
+                totalJuegos += c.getValor() + c.getImpuesto() - c.getDescuento();
+
+                for (JuegoVenta j : c.getJuegos()) {
+                    String nombre = "Juego: " + j.getNombre();
+                    double valor = j.getPrecio();
+                    boolean encontrado = false;
+                    for (int i = 0; i < nombres.size(); i++) {
+                        if (nombres.get(i).equals(nombre)) {
+                            cantidades.set(i, cantidades.get(i) + 1);
+                            totales.set(i, totales.get(i) + valor);
+                            encontrado = true;
+                        }
+                    }
+                    if (!encontrado) {
+                        nombres.add(nombre);
+                        cantidades.add(1);
+                        totales.add(valor);
+                    }
+                }
+            }
+        }
+
+        if (tipoVenta.equalsIgnoreCase("cafe") || tipoVenta.equalsIgnoreCase("ambos")) {
+            for (Pedido p : pedidos) {
+                totalCafe += p.calcularTotal();
+
+                for (Producto prod : p.getProductos()) {
+                    String nombre = "Producto: " + prod.getNombre();
+                    double valor = prod.getPrecio();
+                    boolean encontrado = false;
+                    for (int i = 0; i < nombres.size(); i++) {
+                        if (nombres.get(i).equals(nombre)) {
+                            cantidades.set(i, cantidades.get(i) + 1);
+                            totales.set(i, totales.get(i) + valor);
+                            encontrado = true;
+                        }
+                    }
+                    if (!encontrado) {
+                        nombres.add(nombre);
+                        cantidades.add(1);
+                        totales.add(valor);
+                    }
+                }
+            }
+        }
+
+        String reporte = "Reporte basico de ventas\n";
+        reporte += "Tipo venta: " + tipoVenta + "\n";
+        reporte += "Total juegos: " + totalJuegos + "\n";
+        reporte += "Total cafeteria: " + totalCafe + "\n";
+        reporte += "Total general: " + (totalJuegos + totalCafe) + "\n";
+        reporte += "Detalle:\n";
+
+        if (nombres.isEmpty()) {
+            reporte += "No hay ventas registradas.";
+        } else {
+            for (int i = 0; i < nombres.size(); i++) {
+                reporte += nombres.get(i);
+                reporte += " - cantidad: " + cantidades.get(i);
+                reporte += " - total: " + totales.get(i);
+                reporte += "\n";
+            }
+        }
+
+        return reporte;
     }
+
 
 
     // Cliente los metodos que itene - toca mirar porque aveces salen errores -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -446,6 +642,9 @@ public class BoardCafe {
     public void tomarMesa(int numeroPersonas, boolean hayNinos, boolean hayJovenes) {
         if (!(usuarioActivo instanceof Cliente))
             throw new IllegalArgumentException("Solo Clientes pueden tomar mesas.");
+        if (numeroPersonas <= 0)
+            throw new IllegalArgumentException("El numero de personas debe ser mayor que cero.");
+
 
 
         Mesa mesaLibre = null;
@@ -471,10 +670,10 @@ public class BoardCafe {
 
     public void liberarMesa(int idMesa) {
         Mesa m = mesas.get(idMesa);
-        if (m != null) {
-            m.setNumeroPersonas(0);
-            guardarTodo();
-        }
+        if (m == null)
+            throw new IllegalArgumentException("Mesa no existe.");
+        m.setNumeroPersonas(0);
+        guardarTodo();
     }
 
     public void solicitarPrestamo(int idJuego1, int idJuego2, int idMesa) {
@@ -502,9 +701,15 @@ public class BoardCafe {
             throw new IllegalArgumentException("Maximo 2 juegos prestados.");
         }
 
+        if (cantidadSolicitada == 0)
+            throw new IllegalArgumentException("Debe solicitar al menos un juego.");
+
         Mesa m = mesas.get(idMesa);
-        if (m == null || m.getNumeroPersonas() == 0)
-            throw new IllegalArgumentException("Mesa invalida.");
+        if (idMesa > 0) {
+            m = mesas.get(idMesa);
+            if (m == null || m.getNumeroPersonas() == 0)
+                throw new IllegalArgumentException("Mesa invalida.");
+        }
 
         List<Integer> ids = new ArrayList<>();
         if (idJuego1 > 0)
@@ -588,9 +793,13 @@ public class BoardCafe {
     }
 
     public void comprarJuego(int idJuego, int cantidad) {
+        if (cantidad <= 0)
+            throw new IllegalArgumentException("La cantidad debe ser mayor que cero.");
         JuegosDeMesa j = juegosDeMesa.get(idJuego);
         if (!(j instanceof JuegoVenta))
             throw new IllegalArgumentException("El juego no es de venta.");
+        if (j == null)
+            throw new IllegalArgumentException("Juego no existe.");
 
         JuegoVenta jv = (JuegoVenta) j;
         if (jv.getStock() < cantidad)
@@ -629,6 +838,9 @@ public class BoardCafe {
         if (usuarioActivo.getPuntosFidelidad() < puntos)
             throw new IllegalArgumentException("Puntos insuficientes.");
 
+        if (puntos <= 0)
+            throw new IllegalArgumentException("Los puntos deben ser mayores que cero.");
+
         usuarioActivo.setPuntosFidelidad(usuarioActivo.getPuntosFidelidad() - puntos);
 
         for (Pedido p : pedidos) {
@@ -646,12 +858,21 @@ public class BoardCafe {
                 return;
             }
         }
+        throw new IllegalArgumentException("Compra o pedido no encontrado.");
     }
 
     public void crearPedido(int idProducto, int cantidad, double propina) {
+        if (cantidad <= 0)
+            throw new IllegalArgumentException("La cantidad debe ser mayor que cero.");
+        if (propina < 0)
+            throw new IllegalArgumentException("La propina no puede ser negativa.");
+        
         Producto p = productos.get(idProducto);
         if (p == null)
             throw new IllegalArgumentException("Producto no existe.");
+
+        if (!p.isAprobado())
+            throw new IllegalArgumentException("Producto no aprobado para venta.");
 
         Mesa mesaCliente = null;
         boolean encontrada = false;
