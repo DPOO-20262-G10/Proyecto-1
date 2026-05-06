@@ -34,8 +34,14 @@ public class MainCliente {
                     return;
                 }
             } 
+            else
+            {
+                System.out.println("No se inicio sesion.");
+                return;
+            }
         }
 
+        
 
 
         if (!cafe.getUsuarioActivo().getClass().getSimpleName().equalsIgnoreCase("Cliente")) 

@@ -556,6 +556,19 @@ public class BoardCafe {
     public String generarReporteVentas(Date fechaInicio, Date fechaFin, String agrupacion, String tipoVenta) {
         if (!(usuarioActivo instanceof Administrador))
             throw new IllegalArgumentException("Solo admin.");
+
+        if (fechaInicio == null || fechaFin == null)
+            throw new IllegalArgumentException("Las fechas no pueden estar vacias.");
+
+        if (fechaInicio.after(fechaFin))
+            throw new IllegalArgumentException("La fecha inicial no puede ser mayor que la fecha final.");
+        
+        if (agrupacion == null || agrupacion.trim().length() == 0)
+            throw new IllegalArgumentException("La agrupacion no puede estar vacia.");
+
+        if (!agrupacion.equalsIgnoreCase("producto") && !agrupacion.equalsIgnoreCase("tipo"))
+            throw new IllegalArgumentException("La agrupacion debe ser producto o tipo.");
+
         if (!tipoVenta.equalsIgnoreCase("juegos") && !tipoVenta.equalsIgnoreCase("cafe") && !tipoVenta.equalsIgnoreCase("ambos"))
             throw new IllegalArgumentException("Tipo de venta invalido.");
 
@@ -568,23 +581,30 @@ public class BoardCafe {
 
         if (tipoVenta.equalsIgnoreCase("juegos") || tipoVenta.equalsIgnoreCase("ambos")) {
             for (Compra c : compras) {
-                totalJuegos += c.getValor() + c.getImpuesto() - c.getDescuento();
+                if (!c.getFecha().before(fechaInicio) && !c.getFecha().after(fechaFin)) {
+                    totalJuegos += c.getValor() + c.getImpuesto() - c.getDescuento();
 
-                for (JuegoVenta j : c.getJuegos()) {
-                    String nombre = "Juego: " + j.getNombre();
-                    double valor = j.getPrecio();
-                    boolean encontrado = false;
-                    for (int i = 0; i < nombres.size(); i++) {
-                        if (nombres.get(i).equals(nombre)) {
-                            cantidades.set(i, cantidades.get(i) + 1);
-                            totales.set(i, totales.get(i) + valor);
-                            encontrado = true;
+                    for (JuegoVenta j : c.getJuegos()) {
+                        String nombre;
+                        if (agrupacion.equalsIgnoreCase("tipo"))
+                            nombre = "Juegos";
+                        else
+                            nombre = "Juego: " + j.getNombre();
+
+                        double valor = j.getPrecio();
+                        boolean encontrado = false;
+                        for (int i = 0; i < nombres.size(); i++) {
+                            if (nombres.get(i).equals(nombre)) {
+                                cantidades.set(i, cantidades.get(i) + 1);
+                                totales.set(i, totales.get(i) + valor);
+                                encontrado = true;
+                            }
                         }
-                    }
-                    if (!encontrado) {
-                        nombres.add(nombre);
-                        cantidades.add(1);
-                        totales.add(valor);
+                        if (!encontrado) {
+                            nombres.add(nombre);
+                            cantidades.add(1);
+                            totales.add(valor);
+                        }
                     }
                 }
             }
@@ -592,29 +612,39 @@ public class BoardCafe {
 
         if (tipoVenta.equalsIgnoreCase("cafe") || tipoVenta.equalsIgnoreCase("ambos")) {
             for (Pedido p : pedidos) {
-                totalCafe += p.calcularTotal();
+                if (!p.getFecha().before(fechaInicio) && !p.getFecha().after(fechaFin)) {
+                    totalCafe += p.calcularTotal();
 
-                for (Producto prod : p.getProductos()) {
-                    String nombre = "Producto: " + prod.getNombre();
-                    double valor = prod.getPrecio();
-                    boolean encontrado = false;
-                    for (int i = 0; i < nombres.size(); i++) {
-                        if (nombres.get(i).equals(nombre)) {
-                            cantidades.set(i, cantidades.get(i) + 1);
-                            totales.set(i, totales.get(i) + valor);
-                            encontrado = true;
+                    for (Producto prod : p.getProductos()) {
+                        String nombre;
+                        if (agrupacion.equalsIgnoreCase("tipo"))
+                            nombre = prod.getTipo();
+                        else
+                            nombre = "Producto: " + prod.getNombre();
+
+                        double valor = prod.getPrecio();
+                        boolean encontrado = false;
+                        for (int i = 0; i < nombres.size(); i++) {
+                            if (nombres.get(i).equals(nombre)) {
+                                cantidades.set(i, cantidades.get(i) + 1);
+                                totales.set(i, totales.get(i) + valor);
+                                encontrado = true;
+                            }
                         }
-                    }
-                    if (!encontrado) {
-                        nombres.add(nombre);
-                        cantidades.add(1);
-                        totales.add(valor);
+                        if (!encontrado) {
+                            nombres.add(nombre);
+                            cantidades.add(1);
+                            totales.add(valor);
+                        }
                     }
                 }
             }
         }
 
-        String reporte = "Reporte basico de ventas\n";
+        String reporte = "Reporte de ventas\n";
+        reporte += "Desde: " + fechaInicio + "\n";
+        reporte += "Hasta: " + fechaFin + "\n";
+        reporte += "Agrupacion: " + agrupacion + "\n";
         reporte += "Tipo venta: " + tipoVenta + "\n";
         reporte += "Total juegos: " + totalJuegos + "\n";
         reporte += "Total cafeteria: " + totalCafe + "\n";
@@ -622,8 +652,10 @@ public class BoardCafe {
         reporte += "Detalle:\n";
 
         if (nombres.isEmpty()) {
-            reporte += "No hay ventas registradas.";
-        } else {
+            reporte += "No hay ventas registradas en ese rango.";
+        } 
+        else 
+        {
             for (int i = 0; i < nombres.size(); i++) {
                 reporte += nombres.get(i);
                 reporte += " - cantidad: " + cantidades.get(i);
@@ -679,6 +711,12 @@ public class BoardCafe {
     public void solicitarPrestamo(int idJuego1, int idJuego2, int idMesa) {
         if (!(usuarioActivo instanceof Cliente))
             throw new IllegalArgumentException("Solo Clientes pueden solicitar prestamos.");
+        if (idMesa <= 0)
+            throw new IllegalArgumentException("Debe seleccionar una mesa valida.");
+
+        Mesa m = mesas.get(idMesa);
+        if (m == null || m.getNumeroPersonas() == 0)
+            throw new IllegalArgumentException("Mesa invalida.");
 
         int prestamosActivos = 0;
         for (Prestamo p : prestamos) {
@@ -703,13 +741,6 @@ public class BoardCafe {
 
         if (cantidadSolicitada == 0)
             throw new IllegalArgumentException("Debe solicitar al menos un juego.");
-
-        Mesa m = mesas.get(idMesa);
-        if (idMesa > 0) {
-            m = mesas.get(idMesa);
-            if (m == null || m.getNumeroPersonas() == 0)
-                throw new IllegalArgumentException("Mesa invalida.");
-        }
 
         List<Integer> ids = new ArrayList<>();
         if (idJuego1 > 0)
