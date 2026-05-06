@@ -89,6 +89,158 @@ public class BoardCafe {
 
     // Aqui iria la parte de torneos osea la logica y funciones y tal
 
+	 // Crear torneo
+	 public void crearTorneo(int idTorneo, String nombre, String tipo, 
+				int cuposTotales, int cuposFanaticos, int cuposRegularesOcupados,
+				int cuposFanaticosOcupados, double tarifaEntrada, double premioMetalico,
+				double bonoDescuento, JuegosDeMesa juego) {
+		 
+		 Torneo torneo = new Torneo(idTorneo, nombre,tipo, 
+					cuposTotales, cuposFanaticos, cuposRegularesOcupados,
+					 cuposFanaticosOcupados,  tarifaEntrada , premioMetalico,
+					bonoDescuento, juego);
+		 
+	     torneo.setIdTorneo(ultimoIdTorneo++);
+	     torneos.add(torneo);
+	 }
+	
+
+	 private Torneo buscarTorneoPorId(int idTorneo) {
+	     for (Torneo t : torneos) {
+	         if (t.getIdTorneo() == idTorneo) {
+	             return t;
+	         }
+	     }
+	     throw new IllegalArgumentException("Torneo no encontrado");
+	 }
+
+
+	 // Inscribirse a torneo
+	 public void inscribirseATorneo(int idTorneo, int cantidad) {
+
+	     if (usuarioActivo == null) {
+	         throw new IllegalStateException("No hay usuario activo");
+	     }
+
+	     if (!(usuarioActivo instanceof Cliente || usuarioActivo instanceof Empleado)) {
+	         throw new IllegalStateException("Usuario no puede inscribirse");
+	     }
+
+	     if (cantidad <= 0 || cantidad > 3) {
+	         throw new IllegalArgumentException("Cantidad inválida (máx 3)");
+	     }
+
+	     Torneo torneo = buscarTorneoPorId(idTorneo);
+
+	     boolean esEmpleado = usuarioActivo instanceof Empleado;
+	     boolean esFanatico = false;
+
+	     if (usuarioActivo instanceof Cliente) {
+	    	 Cliente cliente = (Cliente) usuarioActivo;
+	    	 
+	         int idJuego = torneo.getJuego().getIdJuego();
+	         esFanatico = cliente.getFavoritos().contains(idJuego);
+	     }
+
+	     int cuposNecesarios = cantidad;
+
+	     if (esFanatico && torneo.getCuposFanaticosDisponibles() >= cuposNecesarios) {
+
+	         torneo.setCuposFanaticosOcupados(
+	             torneo.getCuposFanaticosOcupados() + cuposNecesarios
+	         );
+
+	     } else {
+
+	         if (torneo.getCuposDisponibles() < cuposNecesarios) {
+	             throw new IllegalStateException("No hay cupos suficientes");
+	         }
+
+	         torneo.setCuposRegularesOcupados(
+	             torneo.getCuposRegularesOcupados() + cuposNecesarios
+	         );
+	     }
+
+	     InscripcionTorneo inscripcion = new InscripcionTorneo(usuarioActivo,cantidad,esFanatico,esEmpleado, torneo);
+	     inscripciones.add(inscripcion);
+	 }
+
+
+	
+
+	
+	
+	 // Desinscribirse
+	 public void desinscribirseATorneo(int idTorneo) {
+
+	     if (usuarioActivo == null) {
+	         throw new IllegalStateException("No hay usuario activo");
+	     }
+
+	     Torneo torneo = buscarTorneoPorId(idTorneo);
+
+	     List<InscripcionTorneo> aEliminar = new ArrayList<>();
+
+	     for (InscripcionTorneo i : inscripciones) {
+
+	         if (i.getUsuario().equals(usuarioActivo) && i.getTorneo().getIdTorneo()== idTorneo) {
+
+	             int cupos = i.getCantidadParticipantes();
+
+	             if (i.isEsFanatico()) {
+	                 torneo.setCuposFanaticosOcupados(
+	                     torneo.getCuposFanaticosOcupados() - cupos
+	                 );
+	             } else {
+	                 torneo.setCuposRegularesOcupados(
+	                     torneo.getCuposRegularesOcupados() - cupos
+	                 );
+	             }
+
+	             aEliminar.add(i);
+	         }
+	     }
+
+	     inscripciones.removeAll(aEliminar);
+	 }
+
+
+
+	
+	
+	 // Consultar torneos
+	 public List<Torneo> consultarTorneos() {
+	     return new ArrayList<>(torneos);
+	 }
+	
+	
+ // Registrar ganador
+
+	 public void registrarGanadorTorneo(int idTorneo, String login) {
+
+	     Torneo torneo = buscarTorneoPorId(idTorneo);
+
+	     Usuario ganador = usuarios.get(login);
+
+	     if (ganador == null) {
+	         throw new IllegalArgumentException("Usuario no existe");
+	     }
+
+	     torneo.setGanador(ganador);
+
+	    // //if (torneo.getTipo().equalsIgnoreCase("amistoso")) {
+
+	      //   ganador.agregarBono(torneo.getBonoDescuento());
+
+	     //} else if (torneo.getTipo().equalsIgnoreCase("competitivo")) {
+
+	       //  if (!(ganador instanceof Empleado)) {
+	           //  ganador.recibirDinero(torneo.calcularPremioMetalico());
+	         //}
+	    // }
+	 }
+
+
 
 
 
