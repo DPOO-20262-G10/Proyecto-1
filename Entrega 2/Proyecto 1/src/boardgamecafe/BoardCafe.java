@@ -30,7 +30,7 @@ import boardgamecafe.Torneos.Torneo;
 import boardgamecafe.Juegos.CopiaJuego;
 import boardgamecafe.Juegos.JuegoVenta;
 import boardgamecafe.menu.Bebida;
-
+import boardgamecafe.persistencia.*;
 
 
 public class BoardCafe {
@@ -62,23 +62,74 @@ public class BoardCafe {
     private int ultimoIdTorneo = 1;
 
     public BoardCafe() {
-        usuarios      = new HashMap<String, Usuario>();
-        juegosDeMesa  = new HashMap<Integer, JuegosDeMesa>();
-        copias        = new HashMap<Integer, CopiaJuego>();
-        mesas         = new HashMap<Integer, Mesa>();
-        productos     = new HashMap<Integer, Producto>();
-        compras       = new ArrayList<Compra>();
-        pedidos       = new ArrayList<Pedido>();
-        prestamos     = new ArrayList<Prestamo>();
-        turnos        = new ArrayList<Turno>();
-        solicitudes   = new ArrayList<SolicitudCambioTurno>();
-        torneos = new ArrayList<Torneo>();
-        inscripciones = new ArrayList<InscripcionTorneo>();
-        usuarioActivo = null;
+        EstadoBoardCafe estado = PersistenciaJSON.cargar();
+     
+
+        this.usuarios      = estado.usuarios;
+        this.juegosDeMesa  = estado.juegosDeMesa;
+        this.copias        = estado.copias;
+        this.mesas         = estado.mesas;
+        this.productos     = estado.productos;
+        this.compras       = estado.compras;
+        this.pedidos       = estado.pedidos;
+        this.prestamos     = estado.prestamos;
+        this.turnos        = estado.turnos;
+        this.solicitudes   = estado.solicitudes;
+        this.torneos       = estado.torneos;
+        this.inscripciones = estado.inscripciones;
+     
+        
+        this.ultimoIdUsuario   = estado.ultimoIdUsuario;
+        this.ultimoIdJuego     = estado.ultimoIdJuego;
+        this.ultimoIdCopia     = estado.ultimoIdCopia;
+        this.ultimoIdMesa      = estado.ultimoIdMesa;
+        this.ultimoIdProducto  = estado.ultimoIdProducto;
+        this.ultimoIdCompra    = estado.ultimoIdCompra;
+        this.ultimoIdPedido    = estado.ultimoIdPedido;
+        this.ultimoIdPrestamo  = estado.ultimoIdPrestamo;
+        this.ultimoIdTurno     = estado.ultimoIdTurno;
+        this.ultimoIdSolicitud = estado.ultimoIdSolicitud;
+        this.ultimoIdTorneo    = estado.ultimoIdTorneo;
+     
+        this.usuarioActivo = null;
     }
+
 
     //la persistencia la cual sirve para que el guardarTodo funcione
 
+    public void guardarTodo() {
+        EstadoBoardCafe estado = new EstadoBoardCafe();
+     
+        // Colecciones
+        estado.usuarios      = this.usuarios;
+        estado.juegosDeMesa  = this.juegosDeMesa;
+        estado.copias        = this.copias;
+        estado.mesas         = this.mesas;
+        estado.productos     = this.productos;
+        estado.compras       = this.compras;
+        estado.pedidos       = this.pedidos;
+        estado.prestamos     = this.prestamos;
+        estado.turnos        = this.turnos;
+        estado.solicitudes   = this.solicitudes;
+        estado.torneos       = this.torneos;
+        estado.inscripciones = this.inscripciones;
+     
+        // Contadores de IDs
+        estado.ultimoIdUsuario   = this.ultimoIdUsuario;
+        estado.ultimoIdJuego     = this.ultimoIdJuego;
+        estado.ultimoIdCopia     = this.ultimoIdCopia;
+        estado.ultimoIdMesa      = this.ultimoIdMesa;
+        estado.ultimoIdProducto  = this.ultimoIdProducto;
+        estado.ultimoIdCompra    = this.ultimoIdCompra;
+        estado.ultimoIdPedido    = this.ultimoIdPedido;
+        estado.ultimoIdPrestamo  = this.ultimoIdPrestamo;
+        estado.ultimoIdTurno     = this.ultimoIdTurno;
+        estado.ultimoIdSolicitud = this.ultimoIdSolicitud;
+        estado.ultimoIdTorneo    = this.ultimoIdTorneo;
+     
+        PersistenciaJSON.guardar(estado);
+    }
+     
 
 
 
