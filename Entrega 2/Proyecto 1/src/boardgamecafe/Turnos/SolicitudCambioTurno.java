@@ -1,4 +1,4 @@
-package boardgamecafe.turnos;
+package boardgamecafe.Turnos;
 
 import boardgamecafe.usuarios.Empleado;
 
