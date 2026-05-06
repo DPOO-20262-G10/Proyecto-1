@@ -1,4 +1,4 @@
-package boardgamecafe.Turnos;
+package boardgamecafe.turnos;
 
 import boardgamecafe.usuarios.Empleado;
 
@@ -22,11 +22,17 @@ public class SolicitudCambioTurno {
     }
 
     public void aprobar() {
+    	if (!estado.equals("Pendiente")) {
+    		throw new IllegalStateException("La solicitud ya fue procesada");
+    	}
         this.estado = "Aprobada";
         System.out.println("Solicitud " + idSolicitud + " aprobada.");
     }
 
     public void rechazar() {
+    	if (!estado.equals("Pendiente")) {
+    		throw new IllegalStateException("La solicitud ya fue procesada");
+    	}
         this.estado = "Rechazada";
         System.out.println("Solicitud " + idSolicitud + " rechazada.");
     }
