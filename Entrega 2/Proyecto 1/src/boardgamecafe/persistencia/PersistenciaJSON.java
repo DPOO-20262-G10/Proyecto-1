@@ -175,29 +175,45 @@ public class PersistenciaJSON {
 
     private static JSONArray serializarJuegos(Map<Integer, JuegosDeMesa> mapa) {
         JSONArray arr = new JSONArray();
+
         for (JuegosDeMesa j : mapa.values()) {
+
             JSONObject o = new JSONObject();
-            o.put("tipo",            j instanceof JuegoVenta ? "venta" : "prestamo");
-            o.put("idJuego",         j.getIdJuego());
-            o.put("nombre",          j.getNombre());
-            o.put("anioPublicacion", j.getAnioPublicacion() != null
-                                        ? j.getAnioPublicacion().getTime() : -1);
-            o.put("minJugadores",    j.getMinJugadores());
-            o.put("maxJugadores",    j.getMaxJugadores());
-            o.put("edadMinima",      j.getEdadMinima());
-            o.put("categoria",       j.getCategoria());
-            o.put("esDificil",       j.isEsDificil());
 
             if (j instanceof JuegoVenta) {
+                o.put("tipo", "venta");
+            } else {
+                o.put("tipo", "prestamo");
+            }
+
+            o.put("idJuego", j.getIdJuego());
+            o.put("nombre", j.getNombre());
+
+            if (j.getAnioPublicacion() != null) {
+                o.put("anioPublicacion", j.getAnioPublicacion().getTime());
+            } else {
+                o.put("anioPublicacion", -1);
+            }
+
+            o.put("minJugadores", j.getMinJugadores());
+            o.put("maxJugadores", j.getMaxJugadores());
+            o.put("edadMinima", j.getEdadMinima());
+            o.put("categoria", j.getCategoria());
+            o.put("esDificil", j.isEsDificil());
+
+            if (j instanceof JuegoVenta) {
+
                 JuegoVenta jv = (JuegoVenta) j;
-                o.put("stock",  jv.getStock());
+
+                o.put("stock", jv.getStock());
                 o.put("precio", jv.getPrecio());
             }
+
             arr.put(o);
         }
+
         return arr;
     }
-
     // --- Copias --------------------------------------------------------------
 
     private static JSONArray serializarCopias(Map<Integer, CopiaJuego> mapa) {
@@ -295,20 +311,37 @@ public class PersistenciaJSON {
     // --- Préstamos -----------------------------------------------------------
 
     private static JSONArray serializarPrestamos(List<Prestamo> lista) {
+
         JSONArray arr = new JSONArray();
+
         for (Prestamo p : lista) {
+
             JSONObject o = new JSONObject();
-            o.put("idPrestamo",         p.getIdPrestamo());
-            o.put("fechaInicio",        p.getFechaInicio().getTime());
-            o.put("fechaFin",           p.getFechaFin() != null ? p.getFechaFin().getTime() : -1);
-            o.put("activo",             p.isActivo());
+
+            o.put("idPrestamo", p.getIdPrestamo());
+            o.put("fechaInicio", p.getFechaInicio().getTime());
+
+            if (p.getFechaFin() != null) {
+                o.put("fechaFin", p.getFechaFin().getTime());
+            } else {
+                o.put("fechaFin", -1);
+            }
+
+            o.put("activo", p.isActivo());
             o.put("advertenciaDificil", p.isAdvertenciaDificil());
-            o.put("loginSolicitante",   p.getSolicitante().getLogin());
+            o.put("loginSolicitante", p.getSolicitante().getLogin());
+
             JSONArray ids = new JSONArray();
-            for (CopiaJuego c : p.getCopias()) ids.put(c.getIdCopia());
+
+            for (CopiaJuego c : p.getCopias()) {
+                ids.put(c.getIdCopia());
+            }
+
             o.put("idsCopias", ids);
+
             arr.put(o);
         }
+
         return arr;
     }
 
@@ -347,24 +380,40 @@ public class PersistenciaJSON {
     // --- Torneos -------------------------------------------------------------
 
     private static JSONArray serializarTorneos(List<Torneo> lista) {
+
         JSONArray arr = new JSONArray();
+
         for (Torneo t : lista) {
+
             JSONObject o = new JSONObject();
-            o.put("idTorneo",              t.getIdTorneo());
-            o.put("nombre",                t.getNombre());
-            o.put("tipo",                  t.getTipo());
-            o.put("cuposTotales",          t.getCuposTotales());
-            o.put("cuposFanaticos",        t.getCuposFanaticos());
-            o.put("cuposRegularesOcupados",t.getCuposRegularesOcupados());
-            o.put("cuposFanaticosOcupados",t.getCuposFanaticosOcupados());
-            o.put("tarifaEntrada",         t.getTarifaEntrada());
-            o.put("premioMetalico",        t.getPremioMetalico());
-            o.put("bonoDescuento",         t.getBonoDescuento());
-            o.put("activo",                t.getactivo());
-            o.put("idJuego",               t.getJuego() != null ? t.getJuego().getIdJuego() : -1);
-            o.put("loginGanador",          t.getGanador() != null ? t.getGanador().getLogin() : "");
+
+            o.put("idTorneo", t.getIdTorneo());
+            o.put("nombre", t.getNombre());
+            o.put("tipo", t.getTipo());
+            o.put("cuposTotales", t.getCuposTotales());
+            o.put("cuposFanaticos", t.getCuposFanaticos());
+            o.put("cuposRegularesOcupados", t.getCuposRegularesOcupados());
+            o.put("cuposFanaticosOcupados", t.getCuposFanaticosOcupados());
+            o.put("tarifaEntrada", t.getTarifaEntrada());
+            o.put("premioMetalico", t.getPremioMetalico());
+            o.put("bonoDescuento", t.getBonoDescuento());
+            o.put("activo", t.getactivo());
+
+            if (t.getJuego() != null) {
+                o.put("idJuego", t.getJuego().getIdJuego());
+            } else {
+                o.put("idJuego", -1);
+            }
+
+            if (t.getGanador() != null) {
+                o.put("loginGanador", t.getGanador().getLogin());
+            } else {
+                o.put("loginGanador", "");
+            }
+
             arr.put(o);
         }
+
         return arr;
     }
 
@@ -440,28 +489,68 @@ public class PersistenciaJSON {
     }
 
     private static void deserializarJuegos(JSONArray arr, EstadoBoardCafe e) {
-        if (arr == null) return;
+
+        if (arr == null) {
+            return;
+        }
+
         for (int i = 0; i < arr.length(); i++) {
+
             JSONObject o = arr.getJSONObject(i);
-            int    id    = o.getInt("idJuego");
+
+            int id = o.getInt("idJuego");
             String nombre = o.getString("nombre");
-            long   ms    = o.optLong("anioPublicacion", -1);
-            Date   fecha = ms >= 0 ? new Date(ms) : null;
-            int    min   = o.getInt("minJugadores");
-            int    max   = o.getInt("maxJugadores");
-            int    edad  = o.getInt("edadMinima");
-            String cat   = o.getString("categoria");
-            boolean dif  = o.getBoolean("esDificil");
-            String tipo  = o.getString("tipo");
+
+            long ms = o.optLong("anioPublicacion", -1);
+
+            Date fecha = null;
+
+            if (ms >= 0) {
+                fecha = new Date(ms);
+            }
+
+            int min = o.getInt("minJugadores");
+            int max = o.getInt("maxJugadores");
+            int edad = o.getInt("edadMinima");
+
+            String cat = o.getString("categoria");
+
+            boolean dif = o.getBoolean("esDificil");
+
+            String tipo = o.getString("tipo");
 
             JuegosDeMesa j;
+
             if ("venta".equals(tipo)) {
-                j = new JuegoVenta(id, nombre, cat, dif, min, max, edad,
-                                   o.getInt("stock"), o.getDouble("precio"));
+
+                j = new JuegoVenta(
+                        id,
+                        nombre,
+                        cat,
+                        dif,
+                        min,
+                        max,
+                        edad,
+                        o.getInt("stock"),
+                        o.getDouble("precio")
+                );
+
                 j.setAnioPublicacion(fecha);
+
             } else {
-                j = new JuegosDeMesa(id, nombre, fecha, min, max, edad, cat, dif);
+
+                j = new JuegosDeMesa(
+                        id,
+                        nombre,
+                        fecha,
+                        min,
+                        max,
+                        edad,
+                        cat,
+                        dif
+                );
             }
+
             e.juegosDeMesa.put(id, j);
         }
     }
@@ -535,23 +624,54 @@ public class PersistenciaJSON {
     }
 
     private static void deserializarSolicitudes(JSONArray arr, EstadoBoardCafe e) {
-        if (arr == null) return;
+
+        if (arr == null) {
+            return;
+        }
+
         for (int i = 0; i < arr.length(); i++) {
+
             JSONObject o = arr.getJSONObject(i);
+
             int id = o.getInt("idSolicitud");
 
-            Empleado solicitante  = buscarEmpleado(o.getString("loginSolicitante"),  e);
-            Empleado intercambio  = buscarEmpleado(o.getString("loginIntercambio"),  e);
-            Turno    turnoActual  = e.turnosPorId  != null
-                                   ? e.turnosPorId.get(o.getInt("idTurnoActual"))
-                                   : null;
+            Empleado solicitante = buscarEmpleado(
+                    o.getString("loginSolicitante"),
+                    e
+            );
 
-            if (solicitante == null || intercambio == null || turnoActual == null) continue;
+            Empleado intercambio = buscarEmpleado(
+                    o.getString("loginIntercambio"),
+                    e
+            );
+
+            Turno turnoActual = null;
+
+            if (e.turnosPorId != null) {
+                turnoActual = e.turnosPorId.get(
+                        o.getInt("idTurnoActual")
+                );
+            }
+
+            if (solicitante == null ||
+                intercambio == null ||
+                turnoActual == null) {
+
+                continue;
+            }
 
             SolicitudCambioTurno s = new SolicitudCambioTurno(
-                    id, o.getString("cambioDia"), turnoActual, solicitante, intercambio);
+                    id,
+                    o.getString("cambioDia"),
+                    turnoActual,
+                    solicitante,
+                    intercambio
+            );
+
             s.setEstado(o.getString("estado"));
+
             e.solicitudes.add(s);
+
             solicitante.getSolicitudes().add(s);
         }
     }
@@ -684,8 +804,14 @@ public class PersistenciaJSON {
     }
 
     private static Empleado buscarEmpleado(String login, EstadoBoardCafe e) {
+
         Usuario u = e.usuarios.get(login);
-        return (u instanceof Empleado) ? (Empleado) u : null;
+
+        if (u instanceof Empleado) {
+            return (Empleado) u;
+        } else {
+            return null;
+        }
     }
 
     private static Torneo buscarTorneoPorId(int id, List<Torneo> lista) {
