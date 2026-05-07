@@ -5,7 +5,7 @@ import java.util.Date;
 import java.util.Scanner;
 import java.text.SimpleDateFormat;
 
-import boardgamecafe.logica.BoardCafe;
+import boardgamecafe.BoardCafe;
 import boardgamecafe.usuarios.Administrador;
 
 public class MainAdministrador {

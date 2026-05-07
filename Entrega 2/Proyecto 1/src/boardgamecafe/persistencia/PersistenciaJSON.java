@@ -46,9 +46,6 @@ public class PersistenciaJSON {
 
     private static final String ARCHIVO = "boardcafe_data.json";
 
-    // =========================================================================
-    // GUARDAR
-    // =========================================================================
 
     public static void guardar(EstadoBoardCafe e) {
         try {
@@ -92,16 +89,13 @@ public class PersistenciaJSON {
         }
     }
 
-    // =========================================================================
-    // CARGAR
-    // =========================================================================
 
     public static EstadoBoardCafe cargar() {
         EstadoBoardCafe e = new EstadoBoardCafe();
         Path ruta = Paths.get(ARCHIVO);
 
         if (!Files.exists(ruta)) {
-            return e; // primera ejecución: estado vacío
+            return e; 
         }
 
         try {
@@ -125,10 +119,10 @@ public class PersistenciaJSON {
             // tienen referencias a otras.
             deserializarUsuarios(raiz.optJSONArray("usuarios"),    e);
             deserializarJuegos  (raiz.optJSONArray("juegos"),      e);
-            deserializarCopias  (raiz.optJSONArray("copias"),      e); // asocia copias a juegos
+            deserializarCopias  (raiz.optJSONArray("copias"),      e); 
             deserializarMesas   (raiz.optJSONArray("mesas"),       e);
             deserializarProductos(raiz.optJSONArray("productos"),  e);
-            deserializarTurnos  (raiz.optJSONArray("turnos"),      e); // asocia turnos a empleados
+            deserializarTurnos  (raiz.optJSONArray("turnos"),      e); 
             deserializarSolicitudes(raiz.optJSONArray("solicitudes"), e);
             deserializarCompras (raiz.optJSONArray("compras"),     e);
             deserializarPedidos (raiz.optJSONArray("pedidos"),     e);
@@ -143,10 +137,6 @@ public class PersistenciaJSON {
 
         return e;
     }
-
-    // =========================================================================
-    // SERIALIZACIÓN
-    // =========================================================================
 
     // --- Usuarios ------------------------------------------------------------
 
@@ -394,9 +384,6 @@ public class PersistenciaJSON {
         return arr;
     }
 
-    // =========================================================================
-    // DESERIALIZACIÓN
-    // =========================================================================
 
     private static void deserializarUsuarios(JSONArray arr, EstadoBoardCafe e) {
         if (arr == null) return;
@@ -481,11 +468,7 @@ public class PersistenciaJSON {
 
     private static void deserializarCopias(JSONArray arr, EstadoBoardCafe e) {
         if (arr == null) return;
-        // Las copias están asociadas a juegos; necesitamos saber a qué juego
-        // pertenece cada copia. Como no guardamos ese vínculo directamente,
-        // reconstruimos el mapa global de copias y vinculamos por idCopia ↔ juego.
-        // IMPORTANTE: el BoardCafe también mantiene un mapa global de copias,
-        // así que simplemente llenamos ese mapa y luego vinculamos.
+
         for (int i = 0; i < arr.length(); i++) {
             JSONObject o  = arr.getJSONObject(i);
             int idCopia   = o.getInt("idCopia");
@@ -495,13 +478,6 @@ public class PersistenciaJSON {
             e.copias.put(idCopia, c);
         }
 
-        // Ahora asociamos cada copia al juego correcto buscando por idCopia en
-        // la lista de copias de cada juego. Como las copias ya existían antes de
-        // guardar, están implícitamente vinculadas; aquí recreamos esa lista.
-        // NOTA: el JSON de juegos NO guarda la lista de copias por simplicidad.
-        // Si tu diseño requiere saber qué copia pertenece a qué juego al cargar,
-        // agrega el campo "idJuego" a cada copia en serializarCopias() y haz la
-        // asociación aquí.  La implementación base lo deja como extensión.
     }
 
     private static void deserializarMesas(JSONArray arr, EstadoBoardCafe e) {
@@ -555,10 +531,7 @@ public class PersistenciaJSON {
             e.turnosPorId.put(id, t);
         }
 
-        // Reasignamos turnos a empleados basándonos en los IDs de turno
-        // que guardamos en cada usuario.  Aquí hacemos una segunda pasada
-        // si serializarUsuarios guardase los idTurnos; como simplificación
-        // se reasignan desde la lista global (ver nota de diseño en el README).
+     
     }
 
     private static void deserializarSolicitudes(JSONArray arr, EstadoBoardCafe e) {
