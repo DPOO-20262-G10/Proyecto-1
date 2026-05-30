@@ -33,9 +33,12 @@ public class MainApp {
         ventana.setVisible(true);
     }
 
-    """
-    Nota: estructura de esta clase fue reorganizada con apoyo de IA para separar la ventana principal del punto de entrada main()
-    """
+    /*
+    * Nota: estructura de esta clase fue reorganizada con apoyo de IA
+    * para separar la ventana principal del punto de entrada main()
+    */
+            
+           
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
