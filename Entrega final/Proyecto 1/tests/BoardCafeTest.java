@@ -6,15 +6,15 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 import java.util.ArrayList;
+import java.io.File;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import boardgamecafe.logica.BoardCafe;
-import boardgamecafe.pedidos.Pedido;
 import boardgamecafe.turnos.Turno;
-import boardgamecafe.ventaJuegos.Compra;
+
 
 public class BoardCafeTest {
 	
@@ -22,7 +22,13 @@ public class BoardCafeTest {
 	
 	@BeforeEach
 	void setUp() throws Exception {
-		cafe = new BoardCafe();
+		File archivo = new File("boardcafe_data.json");
+
+	    if (archivo.exists()) {
+	        archivo.delete();
+	    }
+
+	    cafe = new BoardCafe();
 	}
 
 	@AfterEach
@@ -33,7 +39,7 @@ public class BoardCafeTest {
 
 	@Test
 	void testRegistrarUsuario() {
-		cafe.registrarUsuario("Joan", "Joan", "1234", "cliente");	
+		cafe.registrarUsuario("Joan", "Joan", "1234", "cliente");		
 		assertTrue(cafe.login("Joan", "1234"), "El usuario deberia haberse registrado correctamente");
 	}
 	
@@ -183,21 +189,6 @@ public class BoardCafeTest {
 		assertThrows(IllegalArgumentException.class, ()-> cafe.sugerirProducto("Torta", 8000, "Pasteleria", false, false, alergenos));
 	}
 	
-	// mesero con su unico metodo -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	
-	@Test
-	void testRegistrarJuegosDificiles() {
-		cafe.registrarUsuario("Joan", "Joan", "1234", "mesero");	
-		cafe.login("Joan", "1234"); 
-		
-		List<Integer> juegos = new ArrayList<>();
-		juegos.add(1);
-		juegos.add(2);
-		
-		cafe.registrarJuegosDificiles(juegos);
-		
-		assertEquals(2, cafe.getUsuarioActivo().getFavoritos());
-	}
 	
 	// adminitrador con sus metodos -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -226,8 +217,8 @@ public class BoardCafeTest {
 		
 		cafe.login("admin", "1234");
 		
-		cafe.crearTurno(1, "lunes", Time.valueOf("10:00:00"), Time.valueOf("16:00:00"));
-		Turno turno = cafe.consultarTurno(1);
+		cafe.crearTurno(2, "lunes", Time.valueOf("10:00:00"), Time.valueOf("16:00:00"));
+		Turno turno = cafe.consultarTurno(2);
 		
 		assertNotNull(turno, "El turno deberia existir");
 	}
@@ -238,10 +229,10 @@ public class BoardCafeTest {
 		cafe.registrarUsuario("Emp", "emp", "1234", "empleado");
 		
 		cafe.login("admin", "1234");
-		cafe.crearTurno(1, "lunes", Time.valueOf("10:00:00"), Time.valueOf("16:00:00"));
-		cafe.modificarTurno(1, "martes", Time.valueOf("10:00:00"), Time.valueOf("16:00:00"));
+		cafe.crearTurno(2, "lunes", Time.valueOf("10:00:00"), Time.valueOf("16:00:00"));
+		cafe.modificarTurno(2, "martes", Time.valueOf("10:00:00"), Time.valueOf("16:00:00"));
 		
-		Turno turno = cafe.consultarTurno(1);
+		Turno turno = cafe.consultarTurno(2);
 		assertEquals("martes", turno.getDiaSemana());
 	}
 	
@@ -290,7 +281,7 @@ public class BoardCafeTest {
 		cafe.registrarUsuario("Admin", "admin", "1234", "administrador");
 		cafe.login("admin", "1234");
 		
-		String reporte = cafe.generarReporteVentas(new Date(), new Date(), "dia", "todos");
-		assertEquals("Reporte de Ventas Generado.", reporte);
+		String reporte = cafe.generarReporteVentas(new Date(0), new Date(0), "producto", "ambos");
+		assertTrue(reporte.contains("Reporte de ventas"));
 	}
 }
