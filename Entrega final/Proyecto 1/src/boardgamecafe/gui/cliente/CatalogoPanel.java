@@ -1,7 +1,7 @@
 package boardgamecafe.gui.cliente;
 
 import boardgamecafe.BoardCafe;
-import boardgamecafe.juegos.JuegosDeMesa;
+import boardgamecafe.Juegos.JuegosDeMesa;
 
 import java.awt.BorderLayout;
 import java.awt.event.*;
