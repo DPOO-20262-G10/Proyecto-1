@@ -62,6 +62,7 @@ public class BoardCafe {
     private int ultimoIdTorneo = 1;
 
     public BoardCafe() {
+		inicializarUsuariosBase();
         EstadoBoardCafe estado = PersistenciaJSON.cargar();
      
 
@@ -304,7 +305,15 @@ public class BoardCafe {
     
     
     //la parte de inicio del usuario -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	private void inicializarUsuariosBase() {
 
+    registrarUsuario("Admin principal", "admin", "1234", "administrador");
+
+    registrarUsuario("Empleado principal", "empleado", "1234", "empleado");
+
+    registrarUsuario("Cliente principal", "cliente", "1234", "cliente");
+}
+	
     public void registrarUsuario(String nombre, String login, String password, String tipo) {
         if (usuarios.containsKey(login))
             throw new IllegalArgumentException("El login ya existe.");
