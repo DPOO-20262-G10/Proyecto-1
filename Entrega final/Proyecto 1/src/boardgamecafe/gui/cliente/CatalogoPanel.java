@@ -3,11 +3,8 @@ package boardgamecafe.gui.cliente;
 import boardgamecafe.BoardCafe;
 import boardgamecafe.juegos.JuegosDeMesa;
 
-
-
 import java.awt.BorderLayout;
 import java.awt.event.*;
-
 import javax.swing.*;
 
 public class CatalogoPanel extends JPanel implements ActionListener{
