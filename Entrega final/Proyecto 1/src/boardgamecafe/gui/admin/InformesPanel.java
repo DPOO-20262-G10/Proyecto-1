@@ -18,7 +18,7 @@ public class InformesPanel extends JPanel {
         setBackground(new Color(245, 246, 248));
         setBorder(new EmptyBorder(20, 20, 20, 20));
 
-        JLabel lblTitulo = new JLabel("Generacion de Informes");
+        JLabel lblTitulo = new JLabel("Generacin de Informes");
         lblTitulo.setFont(new Font("SansSerif", Font.BOLD, 22));
         lblTitulo.setForeground(COLOR_ADMIN);
         add(lblTitulo, BorderLayout.NORTH);
