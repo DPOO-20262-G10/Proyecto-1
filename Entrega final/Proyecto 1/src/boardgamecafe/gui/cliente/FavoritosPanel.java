@@ -16,7 +16,7 @@ public class FavoritosPanel extends JPanel implements ActionListener {
     
     private JButton btnVer;
     
-    public FavoritosPanel(BoarCafe cafe) {
+    public FavoritosPanel(BoardCafe cafe) {
     	
     	this.cafe = cafe;
     	
@@ -35,7 +35,7 @@ public class FavoritosPanel extends JPanel implements ActionListener {
     	
     }
     
-    public void ActionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e) {
     	if(e.getSource() == btnVer) {
 			String texto = "";
 			
