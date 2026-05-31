@@ -871,7 +871,27 @@ public class BoardCafe {
     }
 
 
+	public List<Mesa> getMesas() {
+        return new ArrayList<>(mesas.values());
+    }
 
+    public List<Prestamo> getPrestamos() {
+        return new ArrayList<>(prestamos);
+    }
+
+    public List<Pedido> getPedidosTodos() {
+        return new ArrayList<>(pedidos);
+    }
+
+    public List<Producto> getProductos() {
+        return new ArrayList<>(productos.values());
+    }
+
+    public List<SolicitudCambioTurno> getSolicitudesCambioTurno() {
+        return new ArrayList<>(solicitudes);
+    }
+
+	
     // Cliente los metodos que itene - toca mirar porque aveces salen errores -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     public void tomarMesa(int numeroPersonas, boolean hayNinos, boolean hayJovenes) {
