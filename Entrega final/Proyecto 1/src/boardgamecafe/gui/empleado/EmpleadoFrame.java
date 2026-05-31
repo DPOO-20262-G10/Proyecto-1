@@ -1,7 +1,7 @@
 package boardgamecafe.gui.empleado;
 
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 import boardgamecafe.BoardCafe;
 import boardgamecafe.usuarios.Mesero;
@@ -9,10 +9,19 @@ import boardgamecafe.usuarios.Usuario;
 
 public class EmpleadoFrame extends JPanel {
 
+
     private BoardCafe mundo;
 
     private CardLayout layout;
     private JPanel contenido;
+
+    private JButton btnInicio;
+    private JButton btnTurno;
+    private JButton btnPedidos;
+    private JButton btnPrestamos;
+    private JButton btnSugerencias;
+    private JButton btnJuegos;
+    private JButton btnSalir;
 
     private EmpleadoInicioPanel panelInicio;
     private MiTurnoPanel panelTurno;
@@ -23,6 +32,49 @@ public class EmpleadoFrame extends JPanel {
 
     public EmpleadoFrame(BoardCafe mundo) {
         this.mundo = mundo;
+
+        setLayout(new BorderLayout());
+
+        add(crearMenu(), BorderLayout.WEST);
+        add(crearContenido(), BorderLayout.CENTER);
+    }
+
+
+    private JPanel crearMenu() {
+
+        JPanel menu = new JPanel();
+        menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
+        menu.setPreferredSize(new Dimension(180, 0));
+
+        menu.add(crearBoton("Inicio", "INICIO"));
+        menu.add(crearBoton("Mi turno", "TURNO"));
+        menu.add(crearBoton("Pedidos", "PEDIDOS"));
+        menu.add(crearBoton("Préstamos", "PRESTAMOS"));
+        menu.add(crearBoton("Sugerencias", "SUGERENCIAS"));
+        menu.add(crearBoton("Juegos difíciles", "JUEGOS"));
+
+        menu.add(Box.createVerticalGlue());
+
+        btnSalir = new JButton("Salir");
+        btnSalir.addActionListener(e -> logout());
+        menu.add(btnSalir);
+
+        return menu;
+    }
+
+    private JButton crearBoton(String texto, String vista) {
+
+        JButton b = new JButton(texto);
+
+        b.setMaximumSize(new Dimension(180, 40));
+
+        b.addActionListener(e -> navegar(vista));
+
+        return b;
+    }
+
+
+    private JPanel crearContenido() {
 
         layout = new CardLayout();
         contenido = new JPanel(layout);
@@ -41,23 +93,29 @@ public class EmpleadoFrame extends JPanel {
         contenido.add(panelSugerencias, "SUGERENCIAS");
         contenido.add(panelJuegos, "JUEGOS");
 
-        setLayout(new BorderLayout());
-        add(contenido, BorderLayout.CENTER);
+        layout.show(contenido, "INICIO");
 
-        navegar("INICIO");
+        return contenido;
     }
 
-    public void navegar(String vista) {
+
+    private void navegar(String vista) {
 
         if (vista.equals("INICIO")) panelInicio.refrescar();
-        else if (vista.equals("TURNO")) panelTurno.refrescar();
-        else if (vista.equals("PEDIDOS")) panelPedidos.refrescar();
-        else if (vista.equals("PRESTAMOS")) panelPrestamos.refrescar();
-        else if (vista.equals("SUGERENCIAS")) panelSugerencias.refrescar();
-        else if (vista.equals("JUEGOS")) panelJuegos.refrescar();
+        if (vista.equals("TURNO")) panelTurno.refrescar();
+        if (vista.equals("PEDIDOS")) panelPedidos.refrescar();
+        if (vista.equals("PRESTAMOS")) panelPrestamos.refrescar();
+        if (vista.equals("SUGERENCIAS")) panelSugerencias.refrescar();
+        if (vista.equals("JUEGOS")) panelJuegos.refrescar();
 
         layout.show(contenido, vista);
     }
+
+    private void logout() {
+        mundo.logout();
+        JOptionPane.showMessageDialog(this, "Sesión cerrada");
+    }
+
 
     public void inicializar() {
 
@@ -65,15 +123,8 @@ public class EmpleadoFrame extends JPanel {
 
         boolean esMesero = (u instanceof Mesero);
 
-        if (!esMesero) {
-            layout.show(contenido, "INICIO");
-            panelJuegos = null;
-        }
+        btnJuegos.setVisible(esMesero);
 
         navegar("INICIO");
-    }
-
-    public void cerrarSesion() {
-        mundo.logout();
     }
 }
