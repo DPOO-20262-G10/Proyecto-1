@@ -1,6 +1,6 @@
 package boardgamecafe.gui.admin;
 
-import boardgamecafe.logica.*;
+import boardgamecafe.BoardCafe;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
