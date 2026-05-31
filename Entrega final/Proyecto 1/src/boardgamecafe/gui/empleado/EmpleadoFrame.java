@@ -9,7 +9,6 @@ import boardgamecafe.usuarios.Usuario;
 
 public class EmpleadoFrame extends JPanel {
 
-
     private BoardCafe mundo;
 
     private CardLayout layout;
@@ -30,8 +29,11 @@ public class EmpleadoFrame extends JPanel {
     private SugerenciasPanel panelSugerencias;
     private JuegosDificilesPanel panelJuegos;
 
-    public EmpleadoFrame(BoardCafe mundo) {
+    public EmpleadoFrame(CardLayout layout, JPanel contenido, BoardCafe mundo) {
         this.mundo = mundo;
+
+        this.layout = layout;
+        this.contenido = contenido;
 
         setLayout(new BorderLayout());
 
@@ -39,19 +41,29 @@ public class EmpleadoFrame extends JPanel {
         add(crearContenido(), BorderLayout.CENTER);
     }
 
-
     private JPanel crearMenu() {
 
         JPanel menu = new JPanel();
         menu.setLayout(new BoxLayout(menu, BoxLayout.Y_AXIS));
         menu.setPreferredSize(new Dimension(180, 0));
 
-        menu.add(crearBoton("Inicio", "INICIO"));
-        menu.add(crearBoton("Mi turno", "TURNO"));
-        menu.add(crearBoton("Pedidos", "PEDIDOS"));
-        menu.add(crearBoton("Préstamos", "PRESTAMOS"));
-        menu.add(crearBoton("Sugerencias", "SUGERENCIAS"));
-        menu.add(crearBoton("Juegos difíciles", "JUEGOS"));
+        btnInicio = crearBoton("Inicio", "INICIO");
+        menu.add(btnInicio);
+
+        btnTurno = crearBoton("Mi turno", "TURNO");
+        menu.add(btnTurno);
+
+        btnPedidos = crearBoton("Pedidos", "PEDIDOS");
+        menu.add(btnPedidos);
+
+        btnPrestamos = crearBoton("Préstamos", "PRESTAMOS");
+        menu.add(btnPrestamos);
+
+        btnSugerencias = crearBoton("Sugerencias", "SUGERENCIAS");
+        menu.add(btnSugerencias);
+
+        btnJuegos = crearBoton("Juegos difíciles", "JUEGOS");
+        menu.add(btnJuegos);
 
         menu.add(Box.createVerticalGlue());
 
@@ -63,21 +75,14 @@ public class EmpleadoFrame extends JPanel {
     }
 
     private JButton crearBoton(String texto, String vista) {
-
         JButton b = new JButton(texto);
-
         b.setMaximumSize(new Dimension(180, 40));
-
         b.addActionListener(e -> navegar(vista));
-
         return b;
     }
 
-
     private JPanel crearContenido() {
 
-        layout = new CardLayout();
-        contenido = new JPanel(layout);
 
         panelInicio = new EmpleadoInicioPanel(mundo);
         panelTurno = new MiTurnoPanel(mundo);
@@ -98,7 +103,6 @@ public class EmpleadoFrame extends JPanel {
         return contenido;
     }
 
-
     private void navegar(String vista) {
 
         if (vista.equals("INICIO")) panelInicio.refrescar();
@@ -113,9 +117,16 @@ public class EmpleadoFrame extends JPanel {
 
     private void logout() {
         mundo.logout();
-        JOptionPane.showMessageDialog(this, "Sesión cerrada");
-    }
 
+        Container parent = this.getParent();
+        while (parent != null && !(parent instanceof JPanel)) {
+            parent = parent.getParent();
+        }
+
+        if (parent != null) {
+            layout.show(contenido, "LOGIN");
+        }
+    }
 
     public void inicializar() {
 
