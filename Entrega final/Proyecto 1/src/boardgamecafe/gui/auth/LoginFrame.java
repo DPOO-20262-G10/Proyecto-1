@@ -21,7 +21,7 @@ public class LoginFrame extends JPanel {
 	private CardLayout cardLayout;
 	private JPanel mainContainer;
 	
-	public LoginFrame(BoardCafe mundo ,CardLayout cardLayout,JPanel mainContainer) {
+	public LoginFrame(CardLayout cardLayout,JPanel mainContainer,BoardCafe mundo) {
 		
 		this.mundo = mundo;
 	    this.cardLayout = cardLayout;
